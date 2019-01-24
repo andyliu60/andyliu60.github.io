@@ -28,4 +28,17 @@ categories:
 
 《零压力学Python》 作者：布莱恩•奥弗兰德 译者：袁国忠
 
+《Python编程：从入门到实践》 作者：Eric Matthes 译者：袁国忠
+
+《Python编程快速上手——让繁琐工作自动化》 作者：AI Sweigart  
+
+《“笨办法”学Python（第3版）》 作者：泽德 A 肖
+
+《像计算机科学家一样思考Python (第2版)》 作者：Allen B. Downey
+
+《Python高级编程（第二版）》 作者：Michal Jaworski
+
+《用Python写网络爬虫》 作者：Richard Lawson	译者：李斌
+
+《Python自然语言处理》 作者：Steven Bird, Ewan Klein & Edward Loper
 
