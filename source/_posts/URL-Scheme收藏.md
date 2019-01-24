@@ -30,4 +30,7 @@ categories:
 
 生活缴费： alipayqr://platformapi/startapp?saId=2000193
 
+查快递：alipays://platformapi/startapp?appId=20000754
+
+
 <!-- more -->  
