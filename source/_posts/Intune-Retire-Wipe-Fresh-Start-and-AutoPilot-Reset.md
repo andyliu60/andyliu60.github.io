@@ -46,7 +46,9 @@ categories:
 - 设备被Intune管理
 - 配置**“Enrollment status page”**
 
-执行AutoPilot Reset的操作后，客户端设备会收到提示信息，约40分钟后设备就会自动重启，并开始重置设置。
+执行AutoPilot Reset的操作后，客户端设备会收到提示信息，约45分钟后设备就会自动重启，并开始重置设置。
+
+![](/images/74.png)
 
 **注：重置完成后，设备使用原有的主机名**
 
