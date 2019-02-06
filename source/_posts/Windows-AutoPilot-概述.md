@@ -14,7 +14,7 @@ Windows AutoPilot是一种新的Windows设备部署方式，只适用于Windows1
 
 简单来说，Windows AutoPilot主要分为三步：
 
-1. 设备注册
+**1. 设备注册**
 
 设备注册需要设备供应商或者IT管理员将硬件ID上传到Windows AutoPilot Deployment service.
 
@@ -30,16 +30,16 @@ Windows AutoPilot是一种新的Windows设备部署方式，只适用于Windows1
 
 其中，设备供应商可以通过Partner Center上传硬件ID。
 
-2.  创建和分发配置文件
+**2.  创建和分发配置文件**
 
 通过创建配置文件，可以自定义Windows系统的OOBE过程，改善用户体验。
 
-3. 开机使用
+**3. 开机使用**
 
 员工开机后，只需要输入账号和密码，就可以立即使用电脑。
 
 
-Windows AutoPilot可以为企业带来以下好处：
+**Windows AutoPilot可以为企业带来以下好处：**
 
 1. 自动将设备加入Azure AD或者企业AD。
 2. 自动将设备注册到Intune。
