@@ -10,6 +10,8 @@ MSIX是微软应用程序的一种格式。
 
 通过使用**MSIX Packaging Tool**转换工具，可以将Win32的安装包，如.exe,.msi安装文件，转化为MSIX格式的软件包。
 
+<!-- more -->
+
 1. 可以在微软商店中下载**MSIX Packaging Tool**
 
 ![](/images/153.png)
