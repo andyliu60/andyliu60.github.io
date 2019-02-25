@@ -151,7 +151,8 @@ categories:
 
 ![](/images/236.png)
 
-4. 在Intune门户中，可以看到aws05已经enroll成功。
+4. 在Azure AD和Intune门户中，可以看到aws05已经enroll成功。
 
 ![](/images/237.png)
 
+![](/images/238.png)
