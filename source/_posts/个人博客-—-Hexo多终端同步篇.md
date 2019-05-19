@@ -61,13 +61,17 @@ categories:
 
 		npm install
 
-3. 编辑本地博客后，同步到远程hexo分支
+3. 先将远程分支同步到本地hexo分支
+
+		git pull origin hexo
+
+4. 编辑本地博客后，同步到远程hexo分支
 
 		git add "blog files"
 		git commit -m "comments"
 		git push origin hexo
 
-4. 发布博客
+5. 发布博客
 
 		hexo g -d
 
