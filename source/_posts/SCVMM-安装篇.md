@@ -26,7 +26,7 @@ CPU: 4个虚拟处理器
 ## 创建账号和组
 
 
-- **Domain\scvmmadmin**	- SCVMM Service Account account
+- **Domain\scvmmadmin**	- SCVMM Run-As account
 - **Domain\scvmmadmins** - SCVMM Administrators Global Security Group
 - **Domain\scvmmsql** -  SQL service account
 
