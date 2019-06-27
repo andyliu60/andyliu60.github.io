@@ -9,6 +9,7 @@ categories:
 本文主要介绍如何加Hyper-V主机添加到SCVMM中，从而对其进行管理。
 
 ![](/images/336.png)
+<!-- more -->
 ![](/images/337.png)
 ![](/images/338.png)
 ![](/images/339.png)
