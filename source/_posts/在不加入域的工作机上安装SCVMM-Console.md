@@ -11,7 +11,7 @@ categories:
 
 如果在一台不加入公司域的工作机上安装SCVMM Console，会出现以下报错界面：
 
-![](../images/411.png)
+![](/images/411.png)
 
 根据报错内容，要求工作机必须加入公司域以后，并且以域账号登录该工作机，才能开始安装SCVMM Console。
 
