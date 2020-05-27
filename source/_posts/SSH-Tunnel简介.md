@@ -23,13 +23,11 @@ categories:
 
  
 
-SSH Tunnel是由SSH客户端和SSH服务器之间，通过SSH Protocol建立的一条安全通道。应用的客户端程序和服务器程序之间通讯的数据，都会通过SSH Tunnel进行传输。
-
-​                                               
+SSH Tunnel是由SSH客户端和SSH服务器之间，通过SSH Protocol建立的一条安全通道。应用的客户端程序和服务器程序之间通讯的数据，都会通过SSH Tunnel进行传输。                                           
 
 App Client <-> SSH Client <------------SSH Tunnel------------> SSH Server <-> App Server
 
- 
+ ![](/images/420.png)
 
 
 
