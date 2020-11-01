@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+  <link rel="stylesheet" href="/lib/needsharebutton/needsharebutton.css">
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.5.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.5.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.5.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.5.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.5.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.5.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="创建NDES服务账号在域控制器中，打开Active Directory Users and Computers，创建域用户，用户名为ndes。">
+<meta name="keywords" content="Intune">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SCEP证书(二)：安装和配置NDES服务器">
+<meta property="og:url" content="http://yoursite.com/2019/03/05/SCEP证书-二-：安装和配置NDES服务器/index.html">
+<meta property="og:site_name" content="Andy&#39;s Blog">
+<meta property="og:description" content="创建NDES服务账号在域控制器中，打开Active Directory Users and Computers，创建域用户，用户名为ndes。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://yoursite.com/images/239.png">
+<meta property="og:image" content="http://yoursite.com/images/240.png">
+<meta property="og:image" content="http://yoursite.com/images/241.png">
+<meta property="og:image" content="http://yoursite.com/images/242.png">
+<meta property="og:image" content="http://yoursite.com/images/243.png">
+<meta property="og:image" content="http://yoursite.com/images/244.png">
+<meta property="og:image" content="http://yoursite.com/images/245.png">
+<meta property="og:image" content="http://yoursite.com/images/246.png">
+<meta property="og:image" content="http://yoursite.com/images/247.png">
+<meta property="og:image" content="http://yoursite.com/images/248.png">
+<meta property="og:image" content="http://yoursite.com/images/249.png">
+<meta property="og:image" content="http://yoursite.com/images/250.png">
+<meta property="og:image" content="http://yoursite.com/images/251.png">
+<meta property="og:image" content="http://yoursite.com/images/252.png">
+<meta property="og:image" content="http://yoursite.com/images/253.png">
+<meta property="og:image" content="http://yoursite.com/images/254.png">
+<meta property="og:image" content="http://yoursite.com/images/255.png">
+<meta property="og:image" content="http://yoursite.com/images/256.png">
+<meta property="og:image" content="http://yoursite.com/images/257.png">
+<meta property="og:image" content="http://yoursite.com/images/258.png">
+<meta property="og:image" content="http://yoursite.com/images/259.png">
+<meta property="og:image" content="http://yoursite.com/images/260.png">
+<meta property="og:image" content="http://yoursite.com/images/261.png">
+<meta property="og:image" content="http://yoursite.com/images/262.png">
+<meta property="og:image" content="http://yoursite.com/images/263.png">
+<meta property="og:image" content="http://yoursite.com/images/264.png">
+<meta property="og:image" content="http://yoursite.com/images/265.png">
+<meta property="og:image" content="http://yoursite.com/images/266.png">
+<meta property="og:image" content="http://yoursite.com/images/267.png">
+<meta property="og:image" content="http://yoursite.com/images/268.png">
+<meta property="og:image" content="http://yoursite.com/images/269.png">
+<meta property="og:image" content="http://yoursite.com/images/270.png">
+<meta property="og:image" content="http://yoursite.com/images/271.png">
+<meta property="og:image" content="http://yoursite.com/images/272.png">
+<meta property="og:image" content="http://yoursite.com/images/273.png">
+<meta property="og:image" content="http://yoursite.com/images/274.png">
+<meta property="og:image" content="http://yoursite.com/images/275.png">
+<meta property="og:image" content="http://yoursite.com/images/276.png">
+<meta property="og:image" content="http://yoursite.com/images/277.png">
+<meta property="og:image" content="http://yoursite.com/images/278.png">
+<meta property="og:image" content="http://yoursite.com/images/279.png">
+<meta property="og:image" content="http://yoursite.com/images/280.png">
+<meta property="og:image" content="http://yoursite.com/images/281.png">
+<meta property="og:image" content="http://yoursite.com/images/282.png">
+<meta property="og:image" content="http://yoursite.com/images/283.png">
+<meta property="og:updated_time" content="2020-11-01T10:59:40.276Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SCEP证书(二)：安装和配置NDES服务器">
+<meta name="twitter:description" content="创建NDES服务账号在域控制器中，打开Active Directory Users and Computers，创建域用户，用户名为ndes。">
+<meta name="twitter:image" content="http://yoursite.com/images/239.png">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/03/05/SCEP证书-二-：安装和配置NDES服务器/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>SCEP证书(二)：安装和配置NDES服务器 | Andy's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Andy's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/05/SCEP证书-二-：安装和配置NDES服务器/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Andy">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Andy's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">SCEP证书(二)：安装和配置NDES服务器
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-03-05 11:16:12" itemprop="dateCreated datePublished" datetime="2019-03-05T11:16:12+08:00">2019-03-05</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2020-11-01 18:59:40" itemprop="dateModified" datetime="2020-11-01T18:59:40+08:00">2020-11-01</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/企业产品/" itemprop="url" rel="index"><span itemprop="name">企业产品</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="创建NDES服务账号"><a href="#创建NDES服务账号" class="headerlink" title="创建NDES服务账号"></a>创建NDES服务账号</h1><p>在域控制器中，打开<strong>Active Directory Users and Computers</strong>，创建域用户，用户名为<strong>ndes</strong>。</p>
+<p><img src="/images/239.png" alt></p>
+<a id="more"></a>
+<h1 id="创建SCEP证书模板"><a href="#创建SCEP证书模板" class="headerlink" title="创建SCEP证书模板"></a>创建SCEP证书模板</h1><ol>
+<li>登陆CA服务器，打开MMC，并添加<strong>Certificate Templates</strong>。</li>
+<li>选择<strong>User</strong>模板，并复制该模板。</li>
+</ol>
+<p><img src="/images/240.png" alt></p>
+<ol start="3">
+<li>该模板必须包含以下配置：</li>
+</ol>
+<ul>
+<li><p>In <strong>General</strong>:</p>
+<p>  Confirm the <strong>Publish certificate in Active Directory</strong> property is not checked.</p>
+<p>  Enter a friendly <strong>Template display name</strong> for the template.</p>
+</li>
+</ul>
+<ul>
+<li>In <strong>Subject Name</strong>, select Supply in the request. (Security is enforced by the Intune policy module for NDES).</li>
+</ul>
+<ul>
+<li><p>In <strong>Extensions</strong>, confirm the <strong>Description of Application Policies</strong> includes <strong>Client Authentication</strong>.</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>For iOS and macOS certificate templates, on the <strong>Extensions</strong> tab, edit <strong>Key Usage</strong>, and confirm <strong>Signature is proof of origin</strong> is not selected.</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</li>
+</ul>
+<ul>
+<li>In Security, add the NDES service account, and give it Enroll permissions to the template. Intune admins who create SCEP profiles require Read rights so that they can browse to the template when creating SCEP profiles.</li>
+</ul>
+<ol start="4">
+<li>Review the <strong>Validity period</strong> on the <strong>General</strong> tab of the template.</li>
+</ol>
+<p>Example template configuration:</p>
+<p><img src="/images/241.png" alt><br><img src="/images/242.png" alt><br><img src="/images/243.png" alt><br><img src="/images/244.png" alt><br><img src="/images/245.png" alt></p>
+<ol start="5">
+<li><p>配置CA,运行证书请求者自行输入证书有效期：</p>
+<pre><code>certutil -setreg Policy\EditFlags +EDITF_ATTRIBUTEENDDATE
+
+net stop certsvc
+
+net start certsvc
+</code></pre></li>
+<li><p>打开<strong>Certificate Authority</strong>管理面板，选择<strong>Certificate Templates</strong>并点击右键，点击<strong>Action &gt; New &gt; Certificate Template to Issue</strong>，发布创建的证书模板。</p>
+</li>
+</ol>
+<p><img src="/images/246.png" alt></p>
+<h1 id="安装NDES角色"><a href="#安装NDES角色" class="headerlink" title="安装NDES角色"></a>安装NDES角色</h1><ol>
+<li>准备一台全新的Windows Server 2016设备，打开<strong>Server Manager</strong>，安装NDES和IIS。</li>
+</ol>
+<p><img src="/images/247.png" alt><br><img src="/images/248.png" alt><br><img src="/images/249.png" alt><br>选择<strong>Active Directory Certificate Service</strong><br><img src="/images/250.png" alt><br><img src="/images/251.png" alt><br><img src="/images/252.png" alt><br><img src="/images/253.png" alt><br><img src="/images/254.png" alt><br>选择<strong>Network Device Enrollment Service</strong>，取消勾选<strong>Certificate Authority</strong><br><img src="/images/255.png" alt><br><img src="/images/256.png" alt><br>确保以下组件已被勾选：</p>
+<pre><code>Web Server &gt; Security &gt; Request Filtering
+
+Web Server &gt; Application Development &gt; ASP.NET 3.5
+
+    Installing ASP.NET 3.5 installs .NET Framework 3.5. When installing .NET Framework 3.5, install both the core .NET Framework 3.5 feature and HTTP Activation.
+
+Web Server &gt; Application Development &gt; ASP.NET 4.5
+
+    Installing ASP.NET 4.5 installs .NET Framework 4.5. When installing .NET Framework 4.5, install the core .NET Framework 4.5 feature, ASP.NET 4.5, and the WCF Services &gt; HTTP Activation feature.
+
+Management Tools &gt; IIS 6 Management Compatibility &gt; IIS 6 Metabase Compatibility
+
+Management Tools &gt; IIS 6 Management Compatibility &gt; IIS 6 WMI Compatibility
+
+On the server, add the NDES service account as a member of the local IIS_IUSR group.
+</code></pre><p><img src="/images/257.png" alt><br><img src="/images/258.png" alt></p>
+<ol start="2">
+<li><p>在提升权限的CMD窗口中，输入以下命令，为NDES service account设置SPN。</p>
+<pre><code>setspn -s http/&lt;DNS name of NDES Server&gt; &lt;Domain name&gt;\&lt;NDES Service account name&gt;
+</code></pre></li>
+</ol>
+<h1 id="配置NDES"><a href="#配置NDES" class="headerlink" title="配置NDES"></a>配置NDES</h1><h2 id="打开AD-CS配置向导。"><a href="#打开AD-CS配置向导。" class="headerlink" title="打开AD CS配置向导。"></a>打开AD CS配置向导。</h2><p><img src="/images/259.png" alt></p>
+<p><img src="/images/260.png" alt><br><img src="/images/261.png" alt><br><img src="/images/262.png" alt><br><img src="/images/263.png" alt><br><img src="/images/264.png" alt><br><img src="/images/265.png" alt><br><img src="/images/266.png" alt><br><img src="/images/267.png" alt></p>
+<h2 id="修改NDES服务器注册表键值"><a href="#修改NDES服务器注册表键值" class="headerlink" title="修改NDES服务器注册表键值"></a>修改NDES服务器注册表键值</h2><ol>
+<li>查看证书模板的<strong>Properties</strong> -&gt; <strong>Request Handling</strong> -&gt; <strong>Purpose</strong>，可以看到是<strong>Encryption</strong>。</li>
+</ol>
+<p><img src="/images/268.png" alt></p>
+<ol start="2">
+<li>查看证书模板的<strong>Properties</strong> -&gt; <strong>General</strong> -&gt; <strong>Template name</strong>，可以看到是<strong>NDESCertificate</strong>。</li>
+</ol>
+<p><img src="/images/269.png" alt></p>
+<ol start="2">
+<li><p>打开注册表编辑器，找到以下位置：</p>
+<pre><code>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Cryptography\MSCEP\
+</code></pre></li>
+<li><p>修改注册表前，可以看到以下键值。</p>
+</li>
+</ol>
+<p><img src="/images/270.png" alt></p>
+<ol start="4">
+<li>由于证书模板的<strong>Purpose</strong>是<strong>Encryption</strong>，因此，将<strong>EncryptionTemplate</strong>的值修改为证书模板的<strong>Template name</strong>，即<strong>NDESCertificate</strong>。</li>
+</ol>
+<p><img src="/images/271.png" alt></p>
+<ol start="5">
+<li>修改以下注册表键值，可以使得NDES服务器接收长URL请求。</li>
+</ol>
+<p><img src="/images/272.png" alt></p>
+<ol start="6">
+<li>打开IIS manager, 选择<strong> Default Web Site &gt; Request Filtering &gt; Edit Feature Setting</strong>. 修改<strong>Maximum URL length</strong> 和 <strong>Maximum query string</strong> 为 <strong>65534</strong>。</li>
+</ol>
+<p><img src="/images/273.png" alt></p>
+<ol start="7">
+<li>重启NDES服务器。</li>
+<li>打开浏览器，访问<code>http://*FQDN*/certsrv/mscep/mscep.dll</code>，应该可以看到以下页面。</li>
+</ol>
+<p><img src="/images/274.png" alt></p>
+<h2 id="配置IIS服务"><a href="#配置IIS服务" class="headerlink" title="配置IIS服务"></a>配置IIS服务</h2><ol>
+<li>在NDES服务器上，打开证书管理器，选择请求服务器认证证书。</li>
+</ol>
+<p><img src="/images/275.png" alt><br><img src="/images/276.png" alt><br><img src="/images/277.png" alt><br><img src="/images/278.png" alt><br><img src="/images/279.png" alt></p>
+<ol start="2">
+<li>打开IIS管理器，选择<strong>Binding</strong>。</li>
+</ol>
+<p><img src="/images/280.png" alt></p>
+<ol start="3">
+<li>添加SSL服务器证书。</li>
+</ol>
+<p><img src="/images/281.png" alt><br><img src="/images/282.png" alt></p>
+<blockquote>
+<p><strong>Note</strong></p>
+</blockquote>
+<blockquote>
+<p>If the NDES server uses an external and internal name for a single network address, then the server authentication certificate must have:</p>
+</blockquote>
+<ul>
+<li>A <strong>Subject Name</strong> with an external public server name</li>
+<li>A S<strong>ubject Alternative Name</strong> that includes the internal server name</li>
+</ul>
+<ol start="4">
+<li>申请客户端认证证书，用于<strong>Intune Certificate Connector</strong>。由于之前申请的服务器认证证书的<strong>Enhanced Key Usage</strong>同时支持<strong>Client Authentication</strong> 和 <strong>Server Authentication</strong>，因此可以使用同一张证书，不需要再次申请。</li>
+</ol>
+<p><img src="/images/283.png" alt></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Intune/" rel="tag"># Intune</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+            
+               <div id="needsharebutton-postbottom">
+                 <span class="btn">
+                    <i class="fa fa-share-alt" aria-hidden="true"></i>
+                 </span>
+               </div>
+            
+          </div>
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/01/SCEP证书-一-：简介/" rel="next" title="SCEP证书(一)：简介">
+                <i class="fa fa-chevron-left"></i> SCEP证书(一)：简介
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/03/12/SCEP证书-三-：安装和配置Intune-Certificate-Connector/" rel="prev" title="SCEP证书(三)：安装和配置Intune Certificate Connector">
+                SCEP证书(三)：安装和配置Intune Certificate Connector <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Andy</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">71</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">9</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">19</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#创建NDES服务账号"><span class="nav-number">1.</span> <span class="nav-text">创建NDES服务账号</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#创建SCEP证书模板"><span class="nav-number">2.</span> <span class="nav-text">创建SCEP证书模板</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#安装NDES角色"><span class="nav-number">3.</span> <span class="nav-text">安装NDES角色</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置NDES"><span class="nav-number">4.</span> <span class="nav-text">配置NDES</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#打开AD-CS配置向导。"><span class="nav-number">4.1.</span> <span class="nav-text">打开AD CS配置向导。</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#修改NDES服务器注册表键值"><span class="nav-number">4.2.</span> <span class="nav-text">修改NDES服务器注册表键值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置IIS服务"><span class="nav-number">4.3.</span> <span class="nav-text">配置IIS服务</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright"> &copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Andy</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动 v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Pisces</a> v6.5.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+      <div id="needsharebutton-float">
+        <span class="btn">
+          <i class="fa fa-share-alt" aria-hidden="true"></i>
+        </span>
+      </div>
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.5.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.5.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.5.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.5.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.5.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+  
+  <script src="/lib/needsharebutton/needsharebutton.js"></script>
+
+  <script>
+    
+      pbOptions = {};
+      
+          pbOptions.iconStyle = "box";
+      
+          pbOptions.boxForm = "horizontal";
+      
+          pbOptions.position = "bottomCenter";
+      
+          pbOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
+      
+      new needShareButton('#needsharebutton-postbottom', pbOptions);
+    
+    
+      flOptions = {};
+      
+          flOptions.iconStyle = "box";
+      
+          flOptions.boxForm = "horizontal";
+      
+          flOptions.position = "middleRight";
+      
+          flOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
+      
+      new needShareButton('#needsharebutton-float', flOptions);
+    
+  </script>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

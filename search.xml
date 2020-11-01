@@ -1,0 +1,775 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title><![CDATA[如何让Windows Terminal开机自动运行]]></title>
+    <url>%2F2020%2F10%2F31%2F%E5%A6%82%E4%BD%95%E8%AE%A9Windows-Terminal%E5%BC%80%E6%9C%BA%E8%87%AA%E5%8A%A8%E8%BF%90%E8%A1%8C%2F</url>
+    <content type="text"><![CDATA[由于经常需要使用命令行工具，所以十分依赖于Windows Terminal。但是，每次进入Windows系统，都要手动点击运行Windows Terminal，觉得还是有点麻烦。并且，如果要用管理员来运行，还要右键点击后，选择以管理员身份运行。 虽然在设置中，可以配置Windows Terminal随机启动，但是却无法指定用管理员身份运行。所以，想到通过创建快捷方式，并且放到启动目录的方式来解决问题。 创建快捷方式 打开文件资源管理器，访问目录C:\Program Files\WindowsApps\Microsoft.WindowsTerminal_1.3.2651.0_x64__8wekyb3d8bbwe。 右键点击wt.exe，选择发送到-桌面快捷方式。 右键点击桌面上的wt.exe-快捷方式，选择属性，然后选择高级。 选择用管理员身份运行。 复制快捷方式到启动目录 在键盘上同时按下Win + R，打开运行窗口。 输入shell:startup后，按回车后，进入启动目录。 将快捷方式wt.exe-快捷方式复制到启动目录下。 重启电脑后，登录Windows系统后，Window Terminal就会自动以管理员身份运行。]]></content>
+      <tags>
+        <tag>Windows</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[如何让SSH Tunnel保持长时间连接]]></title>
+    <url>%2F2020%2F07%2F25%2F%E5%A6%82%E4%BD%95%E8%AE%A9SSH-Tunnel%E4%BF%9D%E6%8C%81%E9%95%BF%E6%97%B6%E9%97%B4%E8%BF%9E%E6%8E%A5%2F</url>
+    <content type="text"><![CDATA[autossh可以用来监控SSH连接，并且当SSH连接中断后，自动重连。 autossh -f -M 0 -NR 0.0.0.0:50022:localhost:22 root@remoteserver -p 12345 -f autossh运行在后台。即使不用-f参数，autossh也会运行在后台，但是，如果用帐号登录，会提示输入密码。-M 如果设置为0，就会关闭autossh监控SSH隧道通断的状态。并且，autossh文档也建议使用OpenSSH自身的KeepAlive监控功能。即在sshd_config中设置以下参数： 12ClientAliveInterval 30 ClientAliveCountMax 3 另外，如何才能让系统自动重启后，让autossh自动连接。修改配置文件：/etc/rc.local ，在exit 0上方添加以下内容： autossh -f -M 0 -NR 0.0.0.0:50022:localhost:22 root@remoteserver -p 12345 12345678910111213141516171819202122#!/bin/sh -e## rc.local## This script is executed at the end of each multiuser runlevel.# Make sure that the script will &quot;exit 0&quot; on success or any other# value on error.## In order to enable or disable this script just change the execution# bits.## By default this script does nothing.# Print the IP address_IP=$(hostname -I) || trueif [ &quot;$_IP&quot; ]; then printf &quot;My IP address is %s\n&quot; &quot;$_IP&quot;fiautossh -f -M 0 -NR 0.0.0.0:50022:localhost:22 root@remoteserver -p 12345exit 0]]></content>
+      <categories>
+        <category>智能家居</category>
+      </categories>
+      <tags>
+        <tag>RaspberryPi</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[如何防止SSH连接中断]]></title>
+    <url>%2F2020%2F07%2F05%2F%E5%A6%82%E4%BD%95%E9%98%B2%E6%AD%A2SSH%E8%BF%9E%E6%8E%A5%E4%B8%AD%E6%96%AD%2F</url>
+    <content type="text"><![CDATA[修改配置文件sshd_config，设置以下参数： 12ClientAliveInterval 30ClientAliveCountMax 3 ClientAliveInterval参数设置为30s，当SSH服务器在30s后没有收到客户端发送的数据，就会向客户端发送一个请求，要求客户端发送一个Keep Alive的消息。 ClientAliveCountMax参数设置为3，就是当SSH服务器在90s仍然没有接收到客户端发送的Keep Alive消息，就会将SSH连接中断。 默认情况下，ClientAliveInterval的参数为0，即SSH服务器不会向客户端发送请求。]]></content>
+      <categories>
+        <category>智能家居</category>
+      </categories>
+      <tags>
+        <tag>RaspberryPi</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[SSH Tunnel简介]]></title>
+    <url>%2F2020%2F05%2F27%2FSSH-Tunnel%E7%AE%80%E4%BB%8B%2F</url>
+    <content type="text"><![CDATA[什么是SSH Protocol?SSH Protocol（或者称为Secure Shell）是一种安全的远程登录计算机的方式。相对于传统的远程登录协议，例如Telnet, rlogin等，SSH采用了对远程连接进行加密的方式，来保证身份认证和数据传输的机密性。 什么是SSH Tunnel?SSH tunneling，又称为SSH port forwarding，可以将客户端程序发送的数据通过加密的SSH Tunnel，传送给远端的服务器应用。这种方式比较适用于一些传统的应用， 由于这些应用不支持加密传输，并且进行二次开发的成本较高，因此可以采用SSH Tunneling技术，对这些应用传输的数据进行加密。 SSH Tunnel是由SSH客户端和SSH服务器之间，通过SSH Protocol建立的一条安全通道。应用的客户端程序和服务器程序之间通讯的数据，都会通过SSH Tunnel进行传输。 App Client SSH Client SSH Server App Server SSH Tunnel的应用场景 对于一些传统的应用，由于这些应用不支持加密传输，并且进行二次开发的成本较高，因此可以采用SSH Tunneling技术，对这些应用传输的数据进行加密。 由于防火墙的限制，许多服务器只能在内网访问，无法通过Internet远程访问。通过SSH Tunnel，可以远程访问内网的应用和服务器。 通过SSH Tunnel，可以将SSH Client设置为SOCKS代理服务器，所有上网的流量，都将通过SSH Tunnel发送到远端的SSH服务器，并由SSH服务器转发到Internet。 SSH Tunnel的使用方式Local Port ForwardingLocal Port Forwarding需要SSH Client在本地的IP地址（127.0.0.1或者0.0.0.0）监听一个TCP端口，客户端程序只需要连接到SSH Client的IP地址和监听的端口，客户端程序(App Client)发送的数据都将通过SSH Client和SSH Server之间建立的SSH Tunnel传输，最后，由SSH Server将数据发送给服务端程序(App Server)。 逻辑上来讲，相当于将服务端程序的服务端口映射到SSH Client监听的端口。最终目的是将服务端程序的服务端口映射到App Client可以访问的节点。 这种方式适用于服务器端(App Server)的SSH Server允许被防火墙发布到Internet，这样SSH Client可以远程连接到SSH Server。 App Client SSH Client(Listen on a TCP port) ——SSH Tunnel——&gt; SSH Server App Server 配置方式： 在SSH Client上执行以下命令，该命令执行后，会在SSH Client上监听TCP端口8000： ssh -L 127.0.0.1:8000:www.intranet.domain:80 root@sshserver.intranet.domain -L 表示使用Local Port Forwarding 127.0.0.1 在SSH Client所在计算机的本地127.0.0.1监听TCP服务端口 8000: SSH Client监听TCP服务端口8000 www.intranet.domain 远端内网服务器的主机域名 80 远端内网服务器的服务端口80 root@sshserver.intranet.domain 远端SSH服务器的登录账号(root)和地址(sshserver.intranet.domain) 注意：由于SSH Client只是在localhost(127.0.0.1)监听服务端口8000，所以App Client必须和SSH Client在同一台计算机上，才能访问远程应用www.intranet.domain。 如果App Client运行在另外一台计算机上，则需要使用以下命令，让SSH Client在IP地址0.0.0.0上监听服务端口8000，这样，SSH Client就可以接收来自于任何计算机的客户端程序访问。 ssh -L 0.0.0.0:8000:www.intranet.domain:80 root@sshserver.intranet.domain Remote Port Forwarding在有些场景中，服务器端(App Server)的SSH Server无法被发布到Internet，这时候就只能使用Remote Port Forwadingd的方式，将服务端应用程序的服务端口，映射到客户端应用程式(App Client)这一侧的SSH Server。 逻辑上来讲，相当于将服务端程序的服务端口映射到SSH Server监听的端口。最终目的是将服务端程序的服务端口映射到App Client可以访问的节点。 App Client SSH Server(Listen on a TCP port) &lt;——SSH Tunnel——- SSH Client App Server 配置方式： 在SSH Client上执行以下命令，该命令执行后，会在SSH Server上监听TCP端口8000，绑定的IP地址是127.0.0.1： ssh -R :8000:www.intranet.domain:80 root@sshserver.intranet.domain -R 表示使用Remote Port Forwarding 8000: SSH Servert监听TCP服务端口8000 www.intranet.domain 远端内网服务器的主机域名 80 远端内网服务器的服务端口80 root@sshserver.intranet.domain 远端SSH服务器的登录账号(root)和地址(sshserver.intranet.domain) 注意：默认情况下，SSH Server只会绑定IP地址127.0.0.1，如果需要绑定IP地址0.0.0.0，需要修改sshd_config配置文件中的参数GatewayPorts。 以下是关于参数GatewayPorts的三种方式： GatewayPorts no 该设置只允许SSH Server自己连接监听的服务端口8000，拒绝来自于外部计算机的连接请求。 GatewayPorts yes 该设置允许任何计算机的连接请求，如果SSH Server在Internet上，任何计算机都可以访问该服务端口8000。 通过执行以下命令，可以在SSH Server上绑定IP地址0.0.0.0，允许任何计算机访问服务端口8000。 ssh -R 0.0.0.0:8000:www.intranet.domain:80 root@sshserver.intranet.domain GatewayPorts clientspecified 该设置只允许来自于指定IP地址的连接请求。格式如下： 通过执行以下命令，可以限制只允许来自于IP地址2.2.2.2的计算机访问服务端口8000。 ssh -R 2.2.2.2:8000:www.intranet.domain:80 root@sshserver.intranet.domain Dynamic Port ForwardingDynamic Port Forwarding可以将SSH Client配置为SOCKS代理服务器，所有的浏览通过SSH Tunnel发送到SSH Server，并由SSH Server转发至内网应用，或者Internet。 ssh -C -D 1080 root@sshserver.intranet.domain //绑定IP地址127.0.0.1 ssh -C -D 0.0.0.0:1080 root@sshserver.intranet.domain //绑定IP地址0.0.0.0 -C 启用数据压缩 -D 使用Dynamic Port Forwarding App Client -&gt; SSH Client(Listen on a TCP port) ———SSH Tunnel———&gt; SSH Server -&gt; Internet/Corporate App 启用和关闭Port Forwarding通过配置SSH Server的配置文件sshd_config中的参数AllowTcpForwarding，可以启用和关闭Port Forwarding。 AllowTcpForwarding Specifies whether TCP forwarding is permitted. The available options are: yes (the default) or all to allow TCP forwarding, no to prevent all TCP forwarding, local to allow local (from the perspective of ssh(1)) forwarding only remote to allow remote forwarding only. Note that disabling TCP forwarding does not improve security unless users are also denied shell access, as they can always install their own forwarders.]]></content>
+      <categories>
+        <category>智能家居</category>
+      </categories>
+      <tags>
+        <tag>RaspberryPi</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[BT下载完成后发送通知]]></title>
+    <url>%2F2020%2F02%2F16%2FBT%E4%B8%8B%E8%BD%BD%E5%AE%8C%E6%88%90%E5%90%8E%E5%8F%91%E9%80%81%E9%80%9A%E7%9F%A5%2F</url>
+    <content type="text"><![CDATA[需求在树莓派上，每次通过Transmission下载文件时，都要通过浏览器查看文件是否已下载完成。最好能在文件下载完成后，通过手机自动发送下载完成通知。 解决方案Transmission支持当文件下载完成后，可以运行指定路径的脚本。结合IFTTT，可以将下载完成的文件名发送到手机端。 脚本创建脚本文件btfinish.sh：12touch /home/pi/Documents/btfinish.shchmod 775 /home/pi/Documents/btfinish.sh 脚本内容如下：123#!/bin/bash/home/pi/Documents/bt_ifttt.py &quot;$TR_TORRENT_NAME&quot; 创建Python脚本文件bt_ifttt.py，该脚本将会向IFTTT服务发送下载完成的消息。123456789101112131415161718192021222324252627282930313233#!/usr/bin/env python3# -*- coding: utf-8 -*-&apos;This is a module used to communicate with IFTTT platform.&apos;__author__ = &apos;Andy Liu&apos;import requestsimport subprocessimport sysclass Notification(object): mykey = &apos;&apos; def __init__(self, event, **values): self.__url = &quot;https://maker.ifttt.com/trigger/%s/with/key/%s&quot; % (event, self.mykey) self.__values = values def sent(self): requests.post(self.__url, data=self.__values) @property def url(self): return self.__url @property def values(self): return self.__valuesif __name__ == &apos;__main__&apos;: bt_file_name = sys.argv[1] # 从脚本外部获取参数 n = Notification(&apos;bt_download&apos;, value1 = bt_file_name) # IFTTT的事件名称和参数值1 n.sent() IFTTT 配置文件修改Tranmission-daemon配置文件settings.json。 1sudo vi /etc/transmission-daemon/settings.json 修改以下参数：12&quot;script-torrent-done-enabled&quot;: true, # 下载完成后，调用并运行脚本&quot;script-torrent-done-filename&quot;: &quot;/home/pi/Documents/btfinish.sh&quot;, # 指定脚本的位置 参考资料https://github.com/transmission/transmission/wiki/Scripts]]></content>
+      <tags>
+        <tag>RaspberryPi</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[BT种子放到目录下后自动下载]]></title>
+    <url>%2F2020%2F02%2F16%2FBT%E7%A7%8D%E5%AD%90%E6%94%BE%E5%88%B0%E7%9B%AE%E5%BD%95%E4%B8%8B%E5%90%8E%E8%87%AA%E5%8A%A8%E4%B8%8B%E8%BD%BD%2F</url>
+    <content type="text"><![CDATA[Transmission支持将种子文件放到指定目录下后，就会自动创建下载任务。 配置参数 12&quot;watch-dir&quot;: &quot;/home/pi/Downloads/torrents&quot;,&quot;watch-dir-enabled&quot;: true 配置参数watch-dir，指定存放种子文件的目录。为了避免权限不足，建议为目录设置775权限。1chmod 775 torrents 为了使配置生效，需要重新启动Transmission-daemon服务。1sudo service transmission-daemon restart]]></content>
+      <tags>
+        <tag>RaspberryPi</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Wi-Fi密码转换成二维码]]></title>
+    <url>%2F2020%2F02%2F14%2FWi-Fi%E5%AF%86%E7%A0%81%E8%BD%AC%E6%8D%A2%E6%88%90%E4%BA%8C%E7%BB%B4%E7%A0%81%2F</url>
+    <content type="text"><![CDATA[生成二维码下载并安装qrencode. 运行以下命令： 1qrencode -o wifi.png &quot;WIFI:T:WPA;S:&lt;SSID&gt;;P:&lt;PASSWORD&gt;;;&quot; 将&lt;SSID> 替换成Wi-Fi网络的名称，将&lt;PASSWORD>替换成Wi-Fi网络的密码。 如果密码中包含“:”，需要用反斜杠进行转义。例如： 1&quot;WIFI:T:WPA;S:&lt;SSID&gt;;P:pass\:word;;&quot; 扫描二维码在iPhone手机上，打开相机，直接扫码二维码。 在Android手机上，打开WiFi设置，选择需要连接的Wi-Fi网络，扫码二维码。]]></content>
+      <tags>
+        <tag>iOS</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[在不加入域的工作机上安装SCVMM Console]]></title>
+    <url>%2F2019%2F10%2F16%2F%E5%9C%A8%E4%B8%8D%E5%8A%A0%E5%85%A5%E5%9F%9F%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%9C%BA%E4%B8%8A%E5%AE%89%E8%A3%85SCVMM-Console%2F</url>
+    <content type="text"><![CDATA[如果在一台不加入公司域的工作机上安装SCVMM Console，会出现以下报错界面： 根据报错内容，要求工作机必须加入公司域以后，并且以域账号登录该工作机，才能开始安装SCVMM Console。 解决方法： 用管理员权限打开CMD命令行，输入以下命令安装。 setup.exe /client /i /IACCEPTSCEULA]]></content>
+      <categories>
+        <category>企业产品</category>
+      </categories>
+      <tags>
+        <tag>SCVMM</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[更改树莓派的系统和软件更新源]]></title>
+    <url>%2F2019%2F10%2F15%2F%E6%9B%B4%E6%94%B9%E6%A0%91%E8%8E%93%E6%B4%BE%E7%9A%84%E7%B3%BB%E7%BB%9F%E5%92%8C%E8%BD%AF%E4%BB%B6%E6%9B%B4%E6%96%B0%E6%BA%90%2F</url>
+    <content type="text"><![CDATA[由于树莓派的更新源服务器都在国外，因此，每次更新都很慢，甚至在更新过程中，常常会因为网络问题而导致中断。通过将更新源更改为国内地址，可以大大提高更新的速度。 修改软件更新源修改配置文件/etc/apt/sources.list sudo vi /etc/apt/sources.list 将原来的更新源用#注释，然后添加新的更新源。 deb http://mirrors.ustc.edu.cn/raspbian/raspbian/ stretch main contrib non-free rpi 修改系统更新源修改配置文件 /etc/apt/sources.list.d/raspi.list sudo vi /etc/apt/sources.list.d/raspi.list 将原来的更新源用#注释，然后添加新的更新源。 deb http://mirrors.ustc.edu.cn/raspbian/raspbian/ stretch main ui 参考资料 Raspbian Repository Raspbian Mirrors 更新源列表中国科学技术大学Raspbian http://mirrors.ustc.edu.cn/raspbian/raspbian/ 阿里云Raspbian http://mirrors.aliyun.com/raspbian/raspbian/ 清华大学Raspbian http://mirrors.tuna.tsinghua.edu.cn/raspbian/raspbian/ 华中科技大学Raspbian http://mirrors.hustunique.com/raspbian/raspbian/ Arch Linux ARM http://mirrors.hustunique.com/archlinuxarm/ 华南农业大学（华南用户）Raspbian http://mirrors.scau.edu.cn/raspbian/ 大连东软信息学院源（北方用户）Raspbian http://mirrors.neusoft.edu.cn/raspbian/raspbian/ 重庆大学源（中西部用户）Raspbian http://mirrors.cqu.edu.cn/Raspbian/raspbian/ 新加坡国立大学Raspbian http://mirror.nus.edu.sg/raspbian/raspbian 牛津大学Raspbian http://mirror.ox.ac.uk/sites/archive.raspbian.org/archive/raspbian/ 韩国KAIST大学Raspbian http://ftp.kaist.ac.kr/raspbian/raspbian/]]></content>
+      <categories>
+        <category>智能家居</category>
+      </categories>
+      <tags>
+        <tag>RaspberryPi</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Windows 10 Sysprep Failure: 0x80073cf2]]></title>
+    <url>%2F2019%2F08%2F29%2FWindows-10-Sysprep-Failure-0x80073cf2%2F</url>
+    <content type="text"><![CDATA[问题描述在Windows 10操作系统中，运行Sysprep失败。 问题原因查快日志发现，由于之前安装了新的系统语言，连带安装了Microsoft.LanguageExperiencePacken-US。导致Sysprep失败。 解决方法在Powershell中，运行以下命令删除Microsoft.LanguageExperiencePacken-US后，Sysprep成功。 Get-AppxPackage -Name Microsoft.LanguageExperiencePacken-US | Remove-AppxPackage 创建]]></content>
+      <categories>
+        <category>企业产品</category>
+      </categories>
+      <tags>
+        <tag>SCVMM</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[配置Windows iSCSI存储服务]]></title>
+    <url>%2F2019%2F08%2F28%2F%E9%85%8D%E7%BD%AEWindows-iSCSI%E5%AD%98%E5%82%A8%E6%9C%8D%E5%8A%A1%2F</url>
+    <content type="text"><![CDATA[本文主要介绍如何配置Windows iSCSI存储服务。 术语介绍iSCSI iSCSI是一种工业标准协议，利用该技术，可以让计算机通过以太网来访问存储设备。 iSCSI Initiator iSCSI Initiator是iSCSI客户端，通过IP网络，向iSCSI Target发送SCSI指令。 iSCSI Target 与存储关联的连接目标，用于接收iSCSI Initiator发送的连接请求，并且记录与iSCSI Initiator关联的虚拟磁盘。 iSCSI Target Server 运行iSCSI Target的服务器 iSCSI Virtual Disk 也可以称为iSCSI LUN，被iSCSI Initiator挂载到本地，以VHD文件形式存在。 iSCSI Connection 允许多个iSCSI Intiator同时与iSCSI Target连接，但是这些iSCSI Intiator必须是在同一个集群中。 iQN iSCSI Initiator和Target的唯一标识符。Initiator的iQN可以通过命令“iscsicli”查询。 安装iSCSI Target 打开Server Manager，选择“Add roles and features”。 选择角色“iSCSI Target Server”，点击下一步。 点击安装。 配置iSCSI Target 打开Server Manager, 选择“File and Storage Services”。 选择”iSCSI” 打开创建虚拟磁盘向导，创建虚拟磁盘。 选择E盘，点击下一步。 输入虚拟磁盘名称。 输入虚拟磁盘的大小。 创建新的iSCSI Target。 输入iSCSI Target名称。 添加Initiator，输入服务器的FQDN会自动识别iQN。该设置允许添加的Initiator连接给Target。 后续步骤都使用默认设置。 配置iSCSI Initiator通常情况下，iSCSI Initiator运行在另外一台服务器上面。默认情况下，iSCSI Initiator服务处于停止运行状态，因此首先需要启用该服务。 打开Server Manager，选择iSCSI Initiator。 选择Yes，启用iSCSI Initiator服务。 选择Discovery，添加iSCSI Target服务器的DNS名称或者IP地址，在服务器上的所有iSCSI Target会被自动发现。 选择需要连接的iSCSI Target，点击Connect。 成功连接后，状态变为Connected。 分区和格式化新磁盘iSCSI连接成功后，在iSCSI Initiator所在服务器上，会出现一块新的磁盘。 通过打开Server Manager，可以看到该磁盘的信息。 右键点击该磁盘，选择Bring Online. 右键点击该磁盘，选择New Volume… 对磁盘进行初始化和分区。 查快新的磁盘分区。]]></content>
+      <categories>
+        <category>企业产品</category>
+      </categories>
+      <tags>
+        <tag>SCVMM</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[SCVMM:Error(2912) An internal error has occurred trying to contact the 'hv01.contoso.com' server]]></title>
+    <url>%2F2019%2F08%2F13%2FSCVMM-Error-2912-An-internal-error-has-occurred-trying-to-contact-the-hv01-mshybrid-com-server%2F</url>
+    <content type="text"><![CDATA[问题描述在VMM控制台中，刷新主机失败。 问题原因Hyper-V主机的系统版本太低。 Hyper-V主机操作系统版本：14393.1198 解决方法在Hyper-V主机安装最新的操作系统更新包，更新至版本：14393.3115。更新完成后，刷新主机成功。]]></content>
+      <categories>
+        <category>企业产品</category>
+      </categories>
+      <tags>
+        <tag>SCVMM</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[SCVMM:Error (20406) VMM could not enumerate instances of class Msvm_EthernetDeviceSAPImplementation on the server hv-node01.contoso.com]]></title>
+    <url>%2F2019%2F08%2F07%2FSCVMM-Error-20406-VMM-could-not-enumerate-instances-of-class-Msvm-EthernetDeviceSAPImplementation-on-the-server-hv-node01-contoso-com%2F</url>
+    <content type="text"><![CDATA[问题描述在VMM控制台中，刷新主机报错。 问题原因Hyper-V主机的系统时间与VMM服务器不一致。 解决方法调整Hyper-V主机的系统时间，确保其与VMM服务器的时间相同。]]></content>
+      <categories>
+        <category>企业产品</category>
+      </categories>
+      <tags>
+        <tag>SCVMM</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Hexo-Next主题添加搜索功能]]></title>
+    <url>%2F2019%2F07%2F25%2FHexo-Next%E4%B8%BB%E9%A2%98%E6%B7%BB%E5%8A%A0%E6%90%9C%E7%B4%A2%E5%8A%9F%E8%83%BD%2F</url>
+    <content type="text"><![CDATA[安装插件在博客根目录下执行以下命令： $ npm install hexo-generator-searchdb --save 配置Hexo安装完成，编辑博客配置文件：_config.yml，在配置文件的任意位置添加以下内容。 search: path: search.xml field: post format: html limit: 10000 配置Next主题Next 主题自带搜索设置，编辑主题配置文件：_config.yml 找到文件中 Local search 的相关配置，设为 true # Local search local_search: enable: true 部署博客hexo g -d]]></content>
+      <categories>
+        <category>互联网</category>
+      </categories>
+      <tags>
+        <tag>Blog</tag>
+        <tag>Hexo</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[PowerShell:两种扩展方式]]></title>
+    <url>%2F2019%2F07%2F17%2FPowerShell-%E4%B8%A4%E7%A7%8D%E6%89%A9%E5%B1%95%E6%96%B9%E5%BC%8F%2F</url>
+    <content type="text"><![CDATA[PowerShell支持两种扩展方式：Modules 和Snap-ins。 Snap-insSnap-ins在PowerShell中的名称是PSSnapin。PSSnapin通常由DLL文件和XML文件组成，其中XML文件包含配置和帮助文本。 在PowerShell中，PSSnapin必须要安装和注册后，才能正常使用。 get-pssnapin -registered //查看已安装和注册的PSSnapins add-pssnapin sqlservercmdletsnapin100 //加载PSSnapins Modules在PowerShell中，Modules不需要注册。PowerShell会通过特定的路径自动查找Modules。当用户查询Modules的帮助信息，或者使用Modules中的命令时，PowerShell会自动加载模块。 因此，模块可以被PowerSehll自动发现和自动加载。 环境变量PSModulePath定义了模块的存储路径。 PS C:\&gt; get-content env:psmodulepath C:\Users\Administrator\Documents\WindowsPowerShell\Modules;C:\Windows\system32\WindowsPowerShell\v1.0\Modules\ 常用命令： Get-Module Import-Module]]></content>
+      <categories>
+        <category>企业产品</category>
+      </categories>
+      <tags>
+        <tag>PowerShell</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[PowerShell: 如何查找命令]]></title>
+    <url>%2F2019%2F07%2F09%2FPowerShell-%E5%A6%82%E4%BD%95%E6%9F%A5%E6%89%BE%E5%91%BD%E4%BB%A4%2F</url>
+    <content type="text"><![CDATA[方法一：使用Get-Help查找命令PowerShell的help系统中包含所有命令的说明文档，因此，可以通过Get-Help命令查找相关命令。实际上，Get-Help并不是直接搜索命令，而是搜索关于命令的主题。 例子： Get-Help -Name *log* Get-Help -Name *event* 方法二：使用Get-Command查找命令与Get-Help搜索关于命令的主题不同，Get-Command可以直接搜索命令。 例子： Get-Command -Name *log* Get-Command -Noun *log* Get-Command -Verb Get Get-Command -Name *log* -CommandType Cmdlet]]></content>
+      <categories>
+        <category>企业产品</category>
+      </categories>
+      <tags>
+        <tag>PowerShell</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[如何安装Windows版OpenSSH]]></title>
+    <url>%2F2019%2F07%2F08%2F%E5%A6%82%E4%BD%95%E5%AE%89%E8%A3%85Windows%E7%89%88OpenSSH%2F</url>
+    <content type="text"><![CDATA[在Windows 10 1809和Windows Server 2019或者以上的操作系统中，默认已经包含OpenSSH客户端和服务器功能，可以在Settings - Apps中启用。 本文主要介绍如何在Windows Server 2016上安装OpenSSH。 安装OpenSSH 下载OpenSSH，通常下载的文件名为OpenSSH-Win64.zip。 解压文件OpenSSH-Win64.zip，并将其保存到C:\Program Files\。 用管理员权限打开PowerShell，并运行以下命令安装OpenSSH。 .\install-sshd.ps1 打开服务控制面板，将OpenSSH的服务设置为自动启动，并启动OpenSSH服务。 添加环境变量 打开系统属性，在高级中，选择环境变量。 选择路径，点击编辑。 点击添加，输入OpenSSH的安装路径。 添加防火墙策略添加防火墙策略，运行22端口的访问。]]></content>
+      <categories>
+        <category>企业产品</category>
+      </categories>
+      <tags>
+        <tag>Windows</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[SCCM:使用PXE的方式安装操作系统]]></title>
+    <url>%2F2019%2F07%2F03%2FSCCM-%E4%BD%BF%E7%94%A8PXE%E7%9A%84%E6%96%B9%E5%BC%8F%E5%AE%89%E8%A3%85%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%2F</url>
+    <content type="text"><![CDATA[Windows ADK for Windows 10Windows ADK包含了一整套的工具，用于配置和安装Windows操作系统。需要安装的组件包括： Deployment Tools User State Migration Tool (USMT) 下载Windows ADK for Windows 10 Windows ADK需要安装在每一台SCCM站点服务器上。 Windows PEWindows PE是一个小型的Windows操作系统，用于启动计算机，并安装和部署Windows操作系统。 下载Windows PE Important Starting with Windows 10 version 1809, Windows PE is a separate installer. Otherwise there’s no functional difference. DHCP服务器通过PXE方式安装和部署Windows操作系统，必须要准备一台DHCP服务器。 Boot ImageBoot Image用于启动计算机进入Windows Preinstallation Environment(WinPE)。在SCCM中，Boot Image就是Windows PE。 OS ImageOS Image以 Windows Imaging (WIM)的格式存储在SCCM。 在操作系统的ISO文件中，可以在以下路径找到默认的Image文件。 \Sources\install.wim 添加OS Image发布OS Image到DPDP启用PXE Task Squences]]></content>
+      <categories>
+        <category>企业产品</category>
+      </categories>
+      <tags>
+        <tag>SCCM</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[SCVMM: Add a host in an untrusted AD domian]]></title>
+    <url>%2F2019%2F07%2F01%2FSCVMM-Add-a-host-in-an-untrusted-AD-domian%2F</url>
+    <content type="text"><![CDATA[SCVMM可以添加与VMM服务器不在相同域的主机。 环境SCVMM服务器操作系统: Windows Server 2016SCVMM版本： SCVMM 2019Hyper-V Host: Windwos Server 2016 SCVMM所在域: mshybrid.comHyper-V主机所在域： azurelab.ml 准备事项 创建Run-As Account， 该账号必须是azurelab.ml域中的账户，并且必须有Hyper-V主机的本地管理员权限 在SCVMM服务器上，必须能解析Hyper-V host的FQDN主机名。可以用nslookup验证。 添加主机 遇到问题添加主机时，遇到以下问题。通过为VMM服务器和Hyper-V主机安装最新的操作系统补丁后，问题解决。 参考资料 SCVMM Host Not Responding. Error 2912– WinRM &amp; The request is not supported (0x80070032)]]></content>
+      <categories>
+        <category>企业产品</category>
+      </categories>
+      <tags>
+        <tag>SCVMM</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[PXE Boot(一)：工作流程]]></title>
+    <url>%2F2019%2F06%2F27%2FPXE-Boot-%E4%B8%80-%EF%BC%9A%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B%2F</url>
+    <content type="text"><![CDATA[PXE启动包含三个对象：PXE服务器，DHCP服务器和客户机 PXE服务器(10.100.100.116)：Windows Server 2016DHCP服务器(10.100.100.251)：Windows Server 2016 1. 客户机发送DHCP广播包，向DHCP服务器请求IP地址。同时，客户端在广播包中也同时指明需要寻找PXE服务器。这个过程称为”Discover”。 如果DHCP广播包包含PXE请求，数据包中必须包含以下选项： Option(94): Client Network Device Interface 目前只有唯一的值：1，该值代表Universal Network Device Interface (UNDI) Universal Network Device Interface (UNDI) is an application programming interface (API) for network interface cards (NIC) used by the Preboot Execution Environment (PXE) protocol. Option(93): Client System Architecture 该值表示系统的架构类型。通常有以下类型： Type Architecture Name ---- ----------------- 0 Intel x86PC 1 NEC/PC98 2 EFI Itanium 3 DEC Alpha 4 Arc x86 5 Intel Lean Client 6 EFI IA32 7 EFI BC 8 EFI Xscale 9 EFI x86-64 Option(97): Client Machine Identifier 设备的唯一标识符GUID。 2. DHCP服务器响应客户机的请求，并且为客户机分配了一个IP地址。 3. PXE服务器响应客户机的请求，并告知PXE服务器的IP地址。 PXE服务器响应的数据包中，会包含Option 60。 4. 客户机向PXE服务器发送请求，询问Network Boot Program(NBP)路径。 5. PXE服务器响应客户机的请求。 可以看到： Boot file name: smsboot\x64\wdsmgfw.efi 6. 客户机通过TFTP服务器下载wdsmgfw.efi文件。 参考资料： Dynamic Host Configuration Protocol (DHCP) Options for the Intel Preboot eXecution Environment (PXE) You want to PXE Boot? Don’t use DHCP Options.]]></content>
+      <categories>
+        <category>企业产品</category>
+      </categories>
+      <tags>
+        <tag>SCCM</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[SCVMM: 添加主机]]></title>
+    <url>%2F2019%2F06%2F24%2FSCVMM-%E6%B7%BB%E5%8A%A0%E4%B8%BB%E6%9C%BA%2F</url>
+    <content type="text"><![CDATA[本文主要介绍如何加Hyper-V主机添加到SCVMM中，从而对其进行管理。 出现的问题 SCVMM Service account和 Run As account 不能使用同一个账号。否则，添加主机会出错。 安装SCVMM Server是，使用域账号为SCVMM Service Accoun, 添加主机出现以下错误。重装SCVMM，并使用本地账号为SCVMM Service Account，问题解决。]]></content>
+      <categories>
+        <category>企业产品</category>
+      </categories>
+      <tags>
+        <tag>SCVMM</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[SCVMM-安装篇]]></title>
+    <url>%2F2019%2F06%2F20%2FSCVMM-%E5%AE%89%E8%A3%85%E7%AF%87%2F</url>
+    <content type="text"><![CDATA[本文主要介绍如何一步步安装System Center Virtual Machine Manager 2019。 安装环境服务器：虚拟机 CPU: 4个虚拟处理器 内存：4GB(动态) 硬盘：40GB(可扩展) 操作系统：Windows Server 2016 准备工作创建账号和组 Domain\scvmmadmin - SCVMM Run-As account Domain\scvmmadmins - SCVMM Administrators Global Security Group Domain\scvmmsql - SQL service account 安装Windows ADK for Windows 10 1093下载地址：https://docs.microsoft.com/en-us/windows-hardware/get-started/adk-install 安装Deployment Tools组件。 安装Windows PE下载地址：https://docs.microsoft.com/en-us/windows-hardware/get-started/adk-install 安装Windows PE。 安装SQL 2016 Command Line Utilities下载Microsoft® ODBC Driver 11 for SQL Server®和SQL 2016 Command Line Utilities 文件名：msodbcsql文件名：MsSqlCmdLnUtils 先安装Microsoft® ODBC Driver 11 for SQL Server®，后安装SQL 2016 Command Line Utilities。 安装SQL Server 2016 安装SCVMM]]></content>
+      <categories>
+        <category>企业产品</category>
+      </categories>
+      <tags>
+        <tag>SCVMM</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[树莓派Samba服务无法正常启动]]></title>
+    <url>%2F2019%2F06%2F02%2F%E6%A0%91%E8%8E%93%E6%B4%BESamba%E6%9C%8D%E5%8A%A1%E6%97%A0%E6%B3%95%E6%AD%A3%E5%B8%B8%E5%90%AF%E5%8A%A8%2F</url>
+    <content type="text"><![CDATA[问题描述最近，无法通过文件共享的方式，访问树莓派上的文件。在树莓派上通过以下命令查看Samba服务，发现服务没有正常启动。 1234pi@raspberrypi:~ $ sudo service samba status● samba.service Loaded: masked (/dev/null; bad) Active: inactive (dead) 通过以下命令重启Samba服务，无法正常启动。 12pi@raspberrypi:~ $ sudo service samba restartFailed to restart samba.service: Unit samba.service is masked. 解决方法 通过以下命令重启服务。 1sudo systemctl restart smbd.service 或者使用以下命令。 1sudo /etc/init.d/samba restart 通过以上命令重启Samba服务以后，如果使用sudo service samba status查看服务状态，会显示服务状态仍然是inactive。 但是，此时Samba服务已经可以正常访问。]]></content>
+      <categories>
+        <category>智能家居</category>
+      </categories>
+      <tags>
+        <tag>RaspberryPi</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[树莓派意外断电造成挂载硬盘报错：can’t read superblock]]></title>
+    <url>%2F2019%2F05%2F19%2F%E6%A0%91%E8%8E%93%E6%B4%BE%E6%84%8F%E5%A4%96%E6%96%AD%E7%94%B5%E9%80%A0%E6%88%90%E6%8C%82%E8%BD%BD%E7%A1%AC%E7%9B%98%E6%8A%A5%E9%94%99%EF%BC%9Acan%E2%80%99t-read-superblock%2F</url>
+    <content type="text"><![CDATA[最近，因为意外断电的缘故，当再次开机重新挂载硬盘的时候出现报错无法挂载，mount: /dev/sda: can’t read superblock 一、tune2fs简介tune2fs是调整和查看ext2/ext3文件系统的文件系统参数，Windows下面如果出现意外断电死机情况，下次开机一般都会出现系统自检。Linux系统下面也有文件系统自检，而且是可以通过tune2fs命令，自行定义自检周期及方式。 找到Blocks per group后面的数字，我这是32768 1tune2fs -l /dev/sda1 pi@raspberrypi:~ $ sudo tune2fs -l /dev/sda1tune2fs 1.43.4 (31-Jan-2017)Filesystem volume name: HDD160GBLast mounted on: /mnt/HDD160GBFilesystem UUID: 4de0e171-8799-4d96-b4b5-dc8cc1b5302eFilesystem magic number: 0xEF53Filesystem revision #: 1 (dynamic)Filesystem features: has_journal ext_attr resize_inode dir_index filetype needs_recovery extent 64bit flex_bg sparse_super large_file huge_file dir_nlink extra_isize metadata_csumFilesystem flags: unsigned_directory_hashDefault mount options: user_xattr aclFilesystem state: cleanErrors behavior: ContinueFilesystem OS type: LinuxInode count: 9773056Block count: 39072470Reserved block count: 1953623Free blocks: 10899774Free inodes: 9772811First block: 0Block size: 4096Fragment size: 4096Group descriptor size: 64Reserved GDT blocks: 1024Blocks per group: 32768Fragments per group: 32768Inodes per group: 8192Inode blocks per group: 512Flex block group size: 16Filesystem created: Sat Jan 5 12:03:02 2019Last mount time: Sat May 18 12:52:32 2019Last write time: Sat May 18 12:52:32 2019Mount count: 1Maximum mount count: -1Last checked: Sat May 18 11:40:19 2019Check interval: 0 ()Lifetime writes: 1032 MBReserved blocks uid: 0 (user root)Reserved blocks gid: 0 (group root)First inode: 11Inode size: 256Required extra isize: 32Desired extra isize: 32Journal inode: 8Default directory hash: half_md4Directory Hash Seed: 80d6dc25-a820-4596-952a-3f8cb2ad24feJournal backup: inode blocksChecksum type: crc32cChecksum: 0x169cbdf9 二、fsck命令在出现系统故障之后，总是在文件系统上运行 fsck 命令。矫正的动作也许会导致某些数据的丢失。对于每一个一致性的矫正，缺省的操作就是等待操作员输入 yes 或 no。如果对于已经受到影响的文件系统您没有写的许可，那么无论您的实际响应是什么，fsck 命令缺省的动作都是 no。注：对于一个已经安装好了的文件系统，fsck 命令不会做出矫正。fsck 命令出于某些原因可以在一个已经安装好了的文件系统中运行，但不是进行修复。但是当文件系统安装完毕之后，也许会返回不准确的错误消息。fsck 命令检查并以交互方式修复不连贯的文件系统。在安装文件系统之前，应该运行此命令。您必须能够读设备文件，在此设备上驻留着文件系统（例如 /dev/hd0 设备）。通常，文件系统是连贯的，fsck 命令仅仅是报告文件系统中文件的数量、被使用的块和空闲的块。如果文件系统是不连贯的，fsck 命令显示关于那些找到的不连贯性的信息并且提示您修复它们的许可。 fsck 命令在修复中是有保留的并且会尽力避免那些可能导致有效数据丢失的动作。在特定的情况下，fsck 命令会建议破坏已经损坏的文件。如果您不允许 fsck 命令进行必要的修复，那么或许会产生一个不连贯的文件系统。安装一个不连贯的文件系统也许会导致系统的崩溃。 如果 JFS2 文件系统有快照，fsck 命令将试图保留这些快照。如果此操作失败，那么无法保证快照包含来自捕捉到的文件系统的全部先前就存在的映像。fsck 命令将删除快照和快照逻辑卷。如果 fsck 命令对文件系统进行了修改，那么内部快照将被删除。 1fsck.ext4 -b 32768 /dev/sda1]]></content>
+      <categories>
+        <category>智能家居</category>
+      </categories>
+      <tags>
+        <tag>RaspberryPi</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[创建本地管理员账号和密码]]></title>
+    <url>%2F2019%2F03%2F13%2F%E5%88%9B%E5%BB%BA%E6%9C%AC%E5%9C%B0%E7%AE%A1%E7%90%86%E5%91%98%E8%B4%A6%E5%8F%B7%E5%92%8C%E5%AF%86%E7%A0%81%2F</url>
+    <content type="text"><![CDATA[通过Intune可以为Windows设备创建本地管理员账号。 创建和部署策略 在Intune中，创建自定义策略。 (1) 配置用户名： OMA-URI：./Device/Vendor/MSFT/Accounts/Users/UserName Data type： String Value: intuneadmin (2) 配置密码： OMA-URI：./Device/Vendor/MSFT/Accounts/Users/intuneadmin/Password Data type： String Value: password (3) 用户加入本地管理员组 OMA-URI：./Device/Vendor/MSFT/Accounts/Users/intuneadmin/LocalUserGroup Data type：Integer Value: 2 策略推送成功后，可以在本地计算机打开Computer Management，查看用户是否创建成功。 用脚本设置密码永不过期 通过Intune PowerShell Scripts，推送以下命令，将账号设置为密码永不过期。 Set-LocalUser -Name &quot;intuneadmin&quot; -PasswordNeverExpires 1 查看策略执行结果 遇到的问题在部署脚本时，将参数“Run Script in 64 bit PowerShell Host”设置为“No”，导致脚本运行失败。 查看日志文件C:\ProgramData\Microsoft\IntuneManagementExtension\logs\AgentExecutor.log，可以看到以下错误信息。 参考文档 Accounts CSP]]></content>
+      <categories>
+        <category>企业产品</category>
+      </categories>
+      <tags>
+        <tag>Intune</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[SCEP证书(三)：安装和配置Intune Certificate Connector]]></title>
+    <url>%2F2019%2F03%2F12%2FSCEP%E8%AF%81%E4%B9%A6-%E4%B8%89-%EF%BC%9A%E5%AE%89%E8%A3%85%E5%92%8C%E9%85%8D%E7%BD%AEIntune-Certificate-Connector%2F</url>
+    <content type="text"><![CDATA[登陆Intune门户，下载Intune Certificate Connector安装文件。 打开Server Manager，关闭IE Enhanced Security Configuration选项 在NDES服务器上，双击安装文件NDESConnectorSetup.exe，开始安装。 用Azure AD全局管理员登陆，该账号必须有Intune License。 输入之前创建的企业AD账号zurelab\ndes。 提示关闭UI后，可以通过C:\Program Files\Microsoft Intune\NDESConnectorUI\NDESConnectorUI.exe，重新打开UI。 打开Service.msc,重新启动Intune Connector Service。 在浏览器中，输入URL: http://&lt;FQDN_of_your_NDES_server&gt;/certsrv/mscep/mscep.dll,正常情况下，应该能看到403错误页面。]]></content>
+      <categories>
+        <category>企业产品</category>
+      </categories>
+      <tags>
+        <tag>Intune</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[SCEP证书(二)：安装和配置NDES服务器]]></title>
+    <url>%2F2019%2F03%2F05%2FSCEP%E8%AF%81%E4%B9%A6-%E4%BA%8C-%EF%BC%9A%E5%AE%89%E8%A3%85%E5%92%8C%E9%85%8D%E7%BD%AENDES%E6%9C%8D%E5%8A%A1%E5%99%A8%2F</url>
+    <content type="text"><![CDATA[创建NDES服务账号在域控制器中，打开Active Directory Users and Computers，创建域用户，用户名为ndes。 创建SCEP证书模板 登陆CA服务器，打开MMC，并添加Certificate Templates。 选择User模板，并复制该模板。 该模板必须包含以下配置： In General: Confirm the Publish certificate in Active Directory property is not checked. Enter a friendly Template display name for the template. In Subject Name, select Supply in the request. (Security is enforced by the Intune policy module for NDES). In Extensions, confirm the Description of Application Policies includes Client Authentication. For iOS and macOS certificate templates, on the Extensions tab, edit Key Usage, and confirm Signature is proof of origin is not selected. In Security, add the NDES service account, and give it Enroll permissions to the template. Intune admins who create SCEP profiles require Read rights so that they can browse to the template when creating SCEP profiles. Review the Validity period on the General tab of the template. Example template configuration: 配置CA,运行证书请求者自行输入证书有效期： certutil -setreg Policy\EditFlags +EDITF_ATTRIBUTEENDDATE net stop certsvc net start certsvc 打开Certificate Authority管理面板，选择Certificate Templates并点击右键，点击Action &gt; New &gt; Certificate Template to Issue，发布创建的证书模板。 安装NDES角色 准备一台全新的Windows Server 2016设备，打开Server Manager，安装NDES和IIS。 选择Active Directory Certificate Service选择Network Device Enrollment Service，取消勾选Certificate Authority确保以下组件已被勾选： Web Server &gt; Security &gt; Request Filtering Web Server &gt; Application Development &gt; ASP.NET 3.5 Installing ASP.NET 3.5 installs .NET Framework 3.5. When installing .NET Framework 3.5, install both the core .NET Framework 3.5 feature and HTTP Activation. Web Server &gt; Application Development &gt; ASP.NET 4.5 Installing ASP.NET 4.5 installs .NET Framework 4.5. When installing .NET Framework 4.5, install the core .NET Framework 4.5 feature, ASP.NET 4.5, and the WCF Services &gt; HTTP Activation feature. Management Tools &gt; IIS 6 Management Compatibility &gt; IIS 6 Metabase Compatibility Management Tools &gt; IIS 6 Management Compatibility &gt; IIS 6 WMI Compatibility On the server, add the NDES service account as a member of the local IIS_IUSR group. 在提升权限的CMD窗口中，输入以下命令，为NDES service account设置SPN。 setspn -s http/&lt;DNS name of NDES Server&gt; &lt;Domain name&gt;\&lt;NDES Service account name&gt; 配置NDES打开AD CS配置向导。 修改NDES服务器注册表键值 查看证书模板的Properties -&gt; Request Handling -&gt; Purpose，可以看到是Encryption。 查看证书模板的Properties -&gt; General -&gt; Template name，可以看到是NDESCertificate。 打开注册表编辑器，找到以下位置： HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Cryptography\MSCEP\ 修改注册表前，可以看到以下键值。 由于证书模板的Purpose是Encryption，因此，将EncryptionTemplate的值修改为证书模板的Template name，即NDESCertificate。 修改以下注册表键值，可以使得NDES服务器接收长URL请求。 打开IIS manager, 选择 Default Web Site &gt; Request Filtering &gt; Edit Feature Setting. 修改Maximum URL length 和 Maximum query string 为 65534。 重启NDES服务器。 打开浏览器，访问http://*FQDN*/certsrv/mscep/mscep.dll，应该可以看到以下页面。 配置IIS服务 在NDES服务器上，打开证书管理器，选择请求服务器认证证书。 打开IIS管理器，选择Binding。 添加SSL服务器证书。 Note If the NDES server uses an external and internal name for a single network address, then the server authentication certificate must have: A Subject Name with an external public server name A Subject Alternative Name that includes the internal server name 申请客户端认证证书，用于Intune Certificate Connector。由于之前申请的服务器认证证书的Enhanced Key Usage同时支持Client Authentication 和 Server Authentication，因此可以使用同一张证书，不需要再次申请。]]></content>
+      <categories>
+        <category>企业产品</category>
+      </categories>
+      <tags>
+        <tag>Intune</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[SCEP证书(一)：简介]]></title>
+    <url>%2F2019%2F03%2F01%2FSCEP%E8%AF%81%E4%B9%A6-%E4%B8%80-%EF%BC%9A%E7%AE%80%E4%BB%8B%2F</url>
+    <content type="text"><![CDATA[术语SCEP SCEP是Simple Certificate Enrollment Protocol的简称，是一种行业标准协议和技术，主要通过企业内部的CA，为网络设备颁发证书。 NDES NDES是Network Device Enrollment Service的简称，是基于SCEP协议的服务，可以为网络设备提交证书请求，并将获取到的证书转发给网络设备。 步骤 部署和安装企业域 部署和安装CA 部署和安装NDES服务器 部署和安装Microsoft Intune Certificate Connector 部署和安装Azure AD Application Proxy 遇到的问题 Azure AD Application Proxy和Intune Connector安装在同一台服务器，导致iPhone无法获取到证书。 Application Proxy的Pre Authentication应该选择Passthrough。]]></content>
+      <categories>
+        <category>企业产品</category>
+      </categories>
+      <tags>
+        <tag>Intune</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[《白夜行》-阅读笔记]]></title>
+    <url>%2F2019%2F02%2F27%2F%E3%80%8A%E7%99%BD%E5%A4%9C%E8%A1%8C%E3%80%8B-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0%2F</url>
+    <content type="text"><![CDATA[小男孩和小女孩是一对好朋友，经常一起在图书馆看书。有一天，小男孩亲眼看到了自己的亲生父亲强暴了小女孩，一怒之下，小男孩亲手杀害了自己的父亲。由于年龄的原因，小男孩并没有成为警察怀疑的对象，案件也就不了了之。 随着年龄的增长，小男孩和小女孩经历了人生成长中的各个阶段：升学，工作，恋爱，结婚，创业。但是，罪恶的种子早已经在两人的内心悄悄生根和发芽，最终两人走上了一条不归路。]]></content>
+      <categories>
+        <category>阅读</category>
+      </categories>
+      <tags>
+        <tag>阅读笔记</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Intune Enrollment: Windows GPO Enrollment]]></title>
+    <url>%2F2019%2F02%2F25%2FIntune-Enrollment-Windows-GPO-Enrollment%2F</url>
+    <content type="text"><![CDATA[安装AD Connect 下载Azure AD Connect 双击安装文件，开始安装。 点击Continue，并选择Use express settings。 输入Azure AD全局管理员账号和密码，点击Next。 输入企业AD的管理员账号和密码，点击Next。 点击Install。 点击Exit，完成安装。 配置AD Connect选择需要同步的OU 双击Azure AD Connect桌面快捷方式，点击Configure。 选择Customize Synchronization options, 点击Next。 输入Azure AD全局管理员账号和密码，点击Next。 输入企业目录名称，并点击Next。 选择需要同步的OU，本例为Hybrid，然后点击Next。 点击Next。 点击Configure。 点击Exit。 配置Hybrid Azure AD Join 双击Azure AD Connect桌面快捷方式，点击Configure。 选择Configure device options。 点击Next。 输入Azure AD全局管理员账号和密码，点击Next。 选择Configure Hybrid Azure AD join，点击Next。 将Authentication Service选为Azure Active Directory，点击Next。 选择Windows 10 or later domain-joined devices。 点击Next。 点击Configure. 点击Exit。 查看Hybrid中的计算机和用户已经同步到Azure AD。 查看用户op01和op02已经成功同步到Azure AD，来源显示为Windows Server AD 查看计算机aws05已经成功同步到Azure AD，Join Type时Hybrid Azure AD joined 配置auto-enrollment组策略 下载Administrative Templates (.admx) for Windows 10 October 2018 Update (1809)，并将安装文件保存到域控制器。 在域控制器上，双击安装。 访问目录C:\Program Files (x86)\Microsoft Group Policy\Windows 10 October 2018 Update (1809) v2\PolicyDefinitions，拷贝目录en-US和其它所有.admx文件。由于域控制器是英文操作系统，因此，只拷贝en-US目录，其它目录可以不拷贝。 访问目录\azurelab.ml\SYSVOL\azurelab.ml\Policies\PolicyDefinitions，如果没有目录PolicyDefinitions，可以手工创建。将拷贝的文件粘贴到该目录下。 打开组策略管理器，创建组策略Intune Enrollment。 Computer Configuration &gt; Policies &gt; Administrative Templates &gt; Windows Components &gt; MDM &gt; Enable automatic MDM enrollment using default Azure AD credentials. 将该组策略链接到OU Hybrid。 用域账号登陆计算机，并自动Enroll到Intune。 用域账号op01登陆计算机aws05 用管理员权限打开Task Scheduler。 在Task Scheduler Library, 打开 Microsoft &gt; Windows , 然后点击EnterpriseMgmt.可以看到正在执行的auto-enrollment计划任务。 在Azure AD和Intune门户中，可以看到aws05已经enroll成功。]]></content>
+      <categories>
+        <category>企业产品</category>
+      </categories>
+      <tags>
+        <tag>Intune</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[三个绝妙的答案]]></title>
+    <url>%2F2019%2F02%2F19%2F%E4%B8%89%E4%B8%AA%E7%BB%9D%E5%A6%99%E7%9A%84%E7%AD%94%E6%A1%88%2F</url>
+    <content type="text"><![CDATA[结束前，让我再讲一次托尔斯泰写的一个小故事，那个关于三个问题的故事。托尔斯泰不知道这位皇帝的名字….。. 一天，有个皇帝想到，只要他知道三个问题的答案，行事就不会再有差错了。 做每件事的最佳时机是什么时候？ 与你共事最重要的人是谁？ 无论何时，要做的最重要的事是什么？ 皇帝下令全国上下遍贴告示：如果有人能回答以上问题，将获重赏。不少人看到告示便赶往皇宫。每个人的答案都各不相同。 有人对第一个问题的建议是，皇帝制定一个详尽的时间表，将每年、每月、每天、每个小时该做的事情都规划好，然后依表行事。只有这样，皇帝才能在对的时间做对的事。 另有人认为，不能事先计划好所有的事，皇帝应该把无谓的玩乐放在一边，保持对每一件事的关注，这样才能知道什么时候该做什么事。 还有人坚持说，皇帝只靠自己，不可能有足够必要的先见和能力决定什么时候做什么事。皇帝真正需要做的是设立一个智囊团，依照智囊团的忠告行事。 有人则说，有些事必须立即决定，没有时间等大家商量，但是如果想预告知道会发生什么事，应该询问术士和预言师。 众人对第二个问题的答案没有共识。 有人说皇帝应该完全信任臣子，有人认为应该信赖神父和法，还有人向皇帝推荐医生，也有人对武士充满信心。 第三个问题的答案也是众说纷纭。 有些人说科学是最重要的事业，其他人则坚持说是宗教，还有人主张最重要的是军事技术。 皇帝对所有答案都不满意，一分赏赐都没有给。 沉思好几个晚上后，皇帝决定去拜访一位住在山上的隐士，据说他是一名智者。皇帝希望能找到隐士问他那三个问题，虽然他知道隐士从不下山而且出了名的只见穷人，不与权贵有任何来往。于是，皇帝装扮成普通农夫，命令他的随从在山下等候，他独自上山寻找隐士。 到达圣人的住所后，皇帝发现他正在小屋前的菜园翻土。隐士看到陌生人，点头致意，然后继续翻土。体力劳动对他来说显然很吃力。他年岁很大了，每次把铲子戳进地里翻起土来，都会得厉害。 皇帝走近他，说道：“我来这儿是想请教您三个问题：做每件事情的最佳时机为何？与你共事最重要的人是谁？不论何时都要做的最重要的事是什么？ 隐士仔细地听着，但只是拍拍的肩膀便接着翻土。皇帝说：“您一定是累了。来吧，让我帮帮您。”隐士谢过他，把铲子递给皇帝，然后坐在地上休息。 翻过两行土之后，皇帝停下来向士重复他的三个问题。隐士仍然没有回答，但是这次站真情为指着铲子说；“你休息一下吧？我可以接着翻。”可是皇帝没有停下来。一个小时过去了，两个小时过去了。最后，太阳开始下山了。皇帝终于放下铲子，对隐士说：“我来这是要问您，看看能不能回答我的三个问题，如果您不能做任何回答，请明白告诉我，我也好踏上回家的路。” 隐士抬起头，问皇帝：“你有没有听到那边有人在跑？”皇帝转过头。他们看到一个留着白色长胡须的男人从树林里出来，手按着肚子上流血的伤口狂奔。那个男人还没有跑到皇帝面前便神志不清地跌倒了，躺在地上痛苦地呻吟。皇帝和隐士掀开男人的衣服，看到一个被砍得很深的伤口。皇帝很仔细地清洗男子的伤口，然后用自己的衣服包扎。可是不到几分钟，血就浸透了衣服。皇帝把衣服洗干净，再次包扎伤口，而且这样反复了好几次，直到血不再往外冒。 这名受伤的男子终于恢复了意识，向他们要水喝。皇帝跑到下面的河边，带回一壶干净的水。那时，太阳已经完全下山，夜晚的空气开始变冷。隐士帮皇帝把人抬进小屋，放到他的床上。那个男人闭上眼睛，安静地躺着。经过爬山，翻土的漫长一天后，皇帝累坏了，倚着门就睡着了。当他醒来，太阳已经爬上山头。他一时自己身在何处，为何来到这里。他往床那边看去，看到那个受伤的男子也正慌乱地看着他。当那个人与皇帝四目交接，他定下神来看着皇帝，轻声低语速地说道：“请原谅我。” “你做了什么，要我原谅你？”皇帝问。 “您不认识我，陛下！但是我认识你。我是你的死敌，我立誓要复仇，因为在上次那场战役中，你杀了我的兄弟，抢走我的财产。当我知道你独自上山找隐士，我决定在你回程的路上突袭你，把你杀死。但我等了很久也没有看到你出现，于是离开埋伏的地方想找到你。可是我没找到你，反而先撞见你的待从，他们认了我，砍了我一刀。幸运的是我逃脱了，一路跑到这儿来。如果没有遇见你，我现在必死无疑。我本想杀你，你却反过来救了我一命！我真是说不出的羞愧和感激。如果我活下来，我余生都做你的仆人，我也会嘱咐子子孙孙同样待奉您。请宽恕我吧！” 看到自己与夙敌这么轻易就和解了，皇帝欣喜若狂。他不但原谅这名男子，还许诺归还他所有财产，派御医和仆人服待他，直到完全康复。命令待从护送男子回家后，皇帝回去见隐士。他想在回宫前，最后一次问隐士那三个问题。他发现隐士正在昨天翻过的土地上撒种子。 隐士站起来看着皇帝；“你的问题不是已经有答案了么。” “怎么说？”皇帝困惑地问。 “昨天，如果你没有同情我年老，帮我翻土的话，你会在回去的路上那个人攻击，然后你会深深懊悔怎没有留下来和我在一起。 ”所以，最重要的时刻就是你翻土的时候，最重要的人就是我，最重要的事就是帮我翻土。后来，当那个受伤的男人跑来这时，最重要的时刻就是你照料他伤口的时候，因为要是你不照料他，他就会死去，你也会失去与他和解的机会。同样地，他是当时最重要的人，最重要的事就是照料他的伤口。 “记住，最重要的时刻永远只有一个，那就是现在。现在是我们唯一能主导的时间。最重要的人永远就是那个当下和你在一起、在你面前的人，因为谁也不知道将来你是否会与他人共处。最重要的事，就是让你身旁的人快乐，因为这就是人生所追求的。” 托尔斯泰的这则故事，很像佛经里的故事，不逊色于任何经文。我们谈论为社会服务、为世界和平尽力、为人类服务、为远方的人服务、为世界的和平尽力。但是我们常常忘记：我们首先要为身边的人而活。 如果你不能为你的妻子或丈夫、孩子、父母服务，你将如何服务社会？如果你无法让自己的孩子快乐，你怎能期望自己可以让别人快乐？如果我们在和平运动或任何服务团体中的朋友不能互爱互助，我们能爱护谁、帮助谁？我们是为了服务人类，还是只是为了组织的名誉而工作？ 为谁服务？ 为和平服务，为任何需要的人服务，服务的范围无所不包。 让我们先看看小范围：我们的家庭、同学、朋友、社区。我们必须为他们而活：因为，如果我们不为他们而活，我们为谁而活呢？ 托尔斯泰是位圣者——我们佛教徒称之为“菩萨”。可是皇帝自己能够看到生命的意义和方向吗？我们要如何活在当下，如何与周遭的人活在一起，帮助他们减轻痛苦，让他们活得更快乐？该怎么做？答案是：我们必须修持正念。托尔斯泰提示的道理看起来简单，但是若想付诸实践，我们必须借助正念，以求正道。 为了方便朋友们修习，我写了这些篇章。很多人都写过这些道理，但亲身实践。我只是写下自己所经历与体验的事。我希望你和你的朋友在回归自性的求道之路上，会觉得这本书有点用。]]></content>
+      <tags>
+        <tag>佛学</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Intune Enrollment: iOS BYOD Enrollment]]></title>
+    <url>%2F2019%2F02%2F19%2FIntune-Enrollment-iOS-BYOD-Enrollment%2F</url>
+    <content type="text"><![CDATA[BYOD Enrollment主要适用于用户通过在自己私人的手机、平板和电脑上安装Company Portal，将设备注册到Intune。 从苹果商店中，下载并安装Company Portal应用。 打开Company Portal应用。 输入用户名和密码。 点击Begin,开始安装Intune管理配置文件。 点击Continue。 点击Continue。 点击Allow。 点击Install，安装Intune管理配置文件。 输入设备密码。 点击Install, 安装Intune管理配置文件。 点击Install,安装Intune根证书 点击Trust。 点击Done。 点击Open，打开Company Portal。 选择设备类别。 点击Continue。 点击Doen，完成注册。 在Intune门户中，可以看到设备已经注册成功，设备所有者类型为Personal。]]></content>
+      <categories>
+        <category>企业产品</category>
+      </categories>
+      <tags>
+        <tag>Intune</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[三字经]]></title>
+    <url>%2F2019%2F02%2F15%2F%E4%B8%89%E5%AD%97%E7%BB%8F%2F</url>
+    <content type="text"><![CDATA[人 之 初 , 性 本 善 。 性 相 近 , 习 相 远 。 苟 不 教 , 性 乃 迁 。 教 之 道 , 贵 以 专 。 昔 孟 母 ， 择 邻 处 。 子 不 学 ， 断 机 杼 。 窦 燕 山 ， 有 义 方 。 教 五 子 ， 名 俱 扬 。 养 不 教 ， 父 之 过 。 教 不 严 ， 师 之 惰 。 子 不 学 ， 非 所 宜 。 幼 不 学 ， 老 何 为 。 玉 不 琢 ， 不 成 器 。 人 不 学 ， 不 知 义 。 为 人 子 ， 方 少 时 。 亲 师 友 ， 习 礼 仪 。 香 九 龄 ， 能 温 席 。 孝 于 亲 ， 所 当 执 。 融 四 岁 ， 能 让 梨 。 弟 于 长 ， 宜 先 知 。 首 孝 弟 ， 次 见 闻 。 知 某 数 ， 识 某 文 。 一 而 十 ， 十 而 百 。 百 而 千 ， 千 而 万 。 三 才 者 ， 天 地 人 。 三 光 者 ， 日 月 星 。 三 纲 者 ： 君 臣 义 ， 父 子 亲 ， 夫 妇 顺 。 曰 春 夏 ， 曰 秋 冬 。 此 四 时 ， 运 不 穷 。 曰 南 北 ， 曰 西 东 。 此 四 方 ， 应 乎 中 。 曰 水 火 ， 木 金 土 。 此 五 行 ， 本 乎 数 。 曰 仁 义 ， 礼 智 信 。 此 五 常 ， 不 容 紊 。 稻 粱 菽 ， 麦 黍 稷 。 此 六 谷 ， 人 所 食 。 马 牛 羊 ， 鸡 犬 豕 。 此 六 畜 ， 人 所 饲 。 曰 喜 怒 ， 曰 哀 惧 。 爱 恶 欲 ， 七 情 具 。 匏 土 革 ， 木 石 金 。 丝 与 竹 ， 乃 八 音 。 高 曾 祖 ， 父 而 身 。 身 而 子 ， 子 而 孙 。 自 子 孙 ， 至 玄 曾 。 乃 九 族 ， 人 之 伦 。 父 子 恩 ， 夫 妇 从 。 兄 则 友 ， 弟 则 恭 。 长 幼 序 ， 友 与 朋 。 君 则 敬 ， 臣 则 忠 。 此 十 义 ， 人 所 同 。 凡 训 蒙 ， 须 讲 究 。 详 训 诂 ， 名 句 读 。 为 学 者 ， 必 有 初 。 小 学 终 ， 至 四 书 。 《论 语》 者 ， 二 十 篇 。 群 弟 子 ， 记 善 言 。 《孟 子》 者 ， 七 篇 止 。 讲 道 德 ， 说 仁 义 。 作 《中 庸》 ， 子 思 笔 。 中 不 偏 ， 庸 不 易 。 作 《大学》， 乃 曾 子， 自 修 齐， 至 平 治。 《孝经》 通， 四 书 熟， 如 六 经， 始 可 读。 《诗》《书》《易》，《礼》《春秋》， 号 六 经， 当 讲 求。 有 《连山》， 有 《归藏》， 有 《周易》， 三 易 详。 有 典 谟， 有 训 诰， 有 誓 命， 《书》之 奥。 我 周 公， 作 《周礼》， 著 六 官， 存 治 体， 大 小 戴 ， 注 《礼 记》 。 述 圣 言 ， 礼 乐 备 。 曰 《国 风》 ， 曰 《雅》 《颂》 。 号 四 诗 ， 当 讽 咏 。 《诗》既 亡， 《春 秋》 作 。 寓 褒 贬 ， 别 善 恶 。 三 传 者 ， 有 《公 羊》 。 有 《左 氏》 ， 有 《穀 梁》 。 经 既 明 ， 方 读 子 。 撮 其 要 ， 记 其 事 。 五 子 者 ， 有 荀 扬 。 文 中 子 ， 及 老 庄 。 经 子 通 ， 读 诸 史 。 考 世 系 ， 知 终 始 。 自 羲 农 ， 至 黄 帝 。 号 三 皇 ， 居 上 世 。 唐 有 虞 ， 号 二 帝 。 相 揖 逊 ， 称 盛 世 。 夏 有 禹 ， 商 有 汤 。 周 文 武 ， 称 三 王 。 夏 传 子 ， 家 天 下 。 四 百 载 ， 迁 夏 社 。 汤 伐 夏 ， 国 号 商 。 六 百 载 ， 至 纣 亡 。 周 武 王 ， 始 诛 纣 。 八 百 载 ， 最 长 久 。 周 辙 东 ， 王 纲 坠 。 逞 干 戈 ， 尚 游 说 。 始 春 秋 ， 终 战 国 。 五 霸 强 ， 七 雄 出 。 嬴 秦 氏 ， 始 兼 并 。 传 二 世 ， 楚 汉 争 。 高 祖 兴 ， 汉 业 建 。 至 孝 平 ， 王 莽 篡 。 光 武 兴 ， 为 东 汉 。 四 百 年 ， 终 于 献 。 魏 蜀 吴 ， 争 汉 鼎 。 号 三 国 ， 迄 两 晋 。 宋 齐 继 ， 梁 陈 承 。 为 南 朝 ， 都 金 陵 。 北 元 魏 ， 分 东 西 。 宇 文 周 ， 与 高 齐 。 迨 至 隋 ， 一 土 宇 。 不 再 传 ， 失 统 绪 。 唐 高 祖 ， 起 义 师 。 除 隋 乱 ， 创 国 基 。 二 十 传 ， 三 百 载 。 梁 灭 之 ， 国 乃 改 。 梁 唐 晋 ， 及 汉 周 。 称 五 代 ， 皆 有 由 。 炎 宋 兴 ， 受 周 禅 。 十 八 传 ， 南 北 混 。 辽 与 金 ， 帝 号 纷 。 迨 灭 辽 ， 宋 犹 存 。 至 元 兴 ， 金 绪 歇 。 有 宋 世 ， 一 同 灭 。 并 中 国 ， 兼 戎 狄 。 九 十 年， 国 祚 废。 明 太 祖 ， 久 亲 师 。 传 建 文 ， 方 四 祀 。 迁 北 京 ， 永 乐 嗣 。 迨 崇 祯 ， 煤 山 逝 。 清 太 祖 ， 膺 景 命 。 靖 四 方 ， 克 大 定 。 至 宣 统 ， 乃 大 同 。 十 二 世 ， 清 祚 终 。 读 史 者 ， 考 实 录 。 通 古 今 ， 若 亲 目 。 口 而 诵 ， 心 而 惟 。 朝 于 斯 ， 夕 于 斯 。 昔 仲 尼 ， 师 项 橐 。 古 圣 贤 ， 尚 勤 学 。 赵 中 令 ， 读 鲁 论 。 彼 既 仕 ， 学 且 勤 。 披 蒲 编 ， 削 竹 简 。 彼 无 书 ， 且 知 勉 。 头 悬 梁 ， 锥 刺 股 。 彼 不 教 ， 自 勤 苦 。 如 囊 萤 ， 如 映 雪 。 家 虽 贫 ， 学 不 辍 。 如 负 薪 ， 如 挂 角 。 身 虽 劳 ， 犹 苦 卓 。 苏 老 泉 ， 二 十 七 。 始 发 愤 ， 读 书 籍 。 彼 既 老 ， 犹 悔 迟 。 尔 小 生 ， 宜 早 思 。 若 梁 灏 ， 八 十 二 。 对 大 廷 ， 魁 多 士 。 彼 既 成 ， 众 称 异 。 尔 小 生 ， 宜 立 志 。 莹 八 岁 ， 能 咏 诗 。 泌 七 岁 ， 能 赋 棋 。 彼 颖 悟 ， 人 称 奇 。 尔 幼 学 ， 当 效 之 。 蔡 文 姬 ， 能 辨 琴 。 谢 道 韫 ， 能 咏 吟 。 彼 女 子 ， 且 聪 敏 。 尔 男 子 ， 当 自 警 。 唐 刘 晏 ， 方 七 岁 。 举 神 童 ， 作 正 字 。 彼 虽 幼 ， 身 已 仕 。 尔 幼 学 ， 勉 而 致 。 有 为 者 ， 亦 若 是 。 犬 守 夜 ， 鸡 司 晨 。 苟 不 学 ， 曷 为 人 。 蚕 吐 丝 ， 蜂 酿 蜜 。 人 不 学 ， 不 如 物 。 幼 而 学 ， 壮 而 行 。 上 致 君 ， 下 泽 民 。 扬 名 声 ， 显 父 母 。 光 于 前 ， 裕 于 后 。 人 遗 子 ， 金 满 籝 。 我 教 子 ， 惟 一 经 。 勤 有 功 ， 戏 无 益 。 戒 之 哉 ， 宜 勉 力 。]]></content>
+      <categories>
+        <category>国学</category>
+      </categories>
+      <tags>
+        <tag>儒学</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[问题：设备注册到Intune时提示MFA注册]]></title>
+    <url>%2F2019%2F02%2F15%2F%E9%97%AE%E9%A2%98%EF%BC%9A%E8%AE%BE%E5%A4%87%E6%B3%A8%E5%86%8C%E5%88%B0Intune%E6%97%B6%E6%8F%90%E7%A4%BAMFA%E6%B3%A8%E5%86%8C%2F</url>
+    <content type="text"><![CDATA[问题没有配置MFA的策略，但是在将设备通过Company Portal或者Settings应用注册到Intune过程中，提示需要注册MFA。 问题描述通过Company Portal或者Settings应用注册到Intune时，输入用户名和密码以后，提示注册MFA。 问题分析在客户端电脑上，查看设备注册状态，发现设备注册到MAM服务器。 在Azure AD门户中，查看Automatic Enrollment的配置，发现用户所在组配置了MAM Enrollment。 解决方法在Azure AD门户中，打开Automatic Enrollment的配置，将MAM User Scope选择为None。]]></content>
+      <categories>
+        <category>企业产品</category>
+      </categories>
+      <tags>
+        <tag>Intune</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Intune Enrollment: Windows BYOD Enrollment]]></title>
+    <url>%2F2019%2F02%2F15%2FIntune-Enrollment-Windows-BYOD-Enrollment%2F</url>
+    <content type="text"><![CDATA[BYOD Enrollment主要适用于用户通过在自己私人的手机、平板和电脑上安装Company Portal，将设备注册到Intune。 对于Windows 10设备来说，除了可以通过Company Portal注册到Intune以外，也可以通过Settings应用注册。 通过Company Portal注册 从微软商店中，下载并安装Company Portal应用。 打开Company Portal，输入用户名和密码。 选择Yes。 选择Done。 选择设备类别（Intune管理员可以在Intune门户中创建设备类别）。 设备注册成功，进入Company Poral首页。 通过Settings注册 打开Settings应用，选择Accounts - Access work or school。 点击Connect，输入用户名和密码。 点击Done，完成注册。 查看设备注册状态 在Intune门户中，可以看到设备已经注册到Azure Active Directory和Intune。 选择Devices &gt; Azure AD devices,可以看到设备在Azure AD中的Join Type是Azure AD registered。 选择Devices &gt; All devices，可以看到设备的Ownership是Personal。 在客户端电脑上，打开Settings应用，选择Accounts - Access work or school，选择账号，并点击Info。 可以看到设备已经同步成功。]]></content>
+      <categories>
+        <category>企业产品</category>
+      </categories>
+      <tags>
+        <tag>Intune</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[将Win32安装程序转换为MSIX格式]]></title>
+    <url>%2F2019%2F02%2F13%2F%E5%B0%86Win32%E5%AE%89%E8%A3%85%E7%A8%8B%E5%BA%8F%E8%BD%AC%E6%8D%A2%E4%B8%BAMSIX%E6%A0%BC%E5%BC%8F%2F</url>
+    <content type="text"><![CDATA[MSIX是微软应用程序的一种格式。 通过使用MSIX Packaging Tool转换工具，可以将Win32的安装包，如.exe,.msi安装文件，转化为MSIX格式的软件包。 可以在微软商店中下载MSIX Packaging Tool 打开软件。 选择“Application Package”，上传文件。 点击Next，选择“Create package on this computer”。 点击Next，确保根据要求填写Package Name, Publisher Name和Version。 点击Next，安装MSIX Packaging Tool Driver。 点击Next，开始安装7-Zip 点击Next， 选择“Yes, move on” 选择MSIX文件的保存路径，点击Create。 点击Close。 查看生成的文件。 注：在转换Snagit.exe文件的时候，转换失败，并出现以下截图中的错误。 查看日志文件，发现以下错误信息。 [2/13/2019 11:24:18 AM] [Error] E R R O R : P R I 1 9 1 : 0 x 8 0 0 8 0 2 0 4 - A p p x m a n i f e s t n o t f o u n d o r i s i n v a l i d . P l e a s e e n s u r e w e l l - f o r m e d m a n i f e s t f i l e i s p r e s e n t . O r s p e c i f y a n i n d e x n a m e w i t h / i n s w i t c h .[2/13/2019 11:24:18 AM] [Error][2/13/2019 11:24:18 AM] [Error] e r r o r C 0 0 C E 1 A 1 : A p p m a n i f e s t v a l i d a t i o n e r r o r : T h e a p p m a n i f e s t m u s t b e v a l i d a s p e r s c h e m a : L i n e 2 0 , C o l u m n 1 3 7 5 6 , R e a s o n : ‘ 1 4 2 7 2 5 0 4 - e 2 b e - 4 9 7 6 - a 4 7 c - 7 a e e 1 7 1 1 c 6 9 0 ‘ i s a d u p l i c a t e k e y f o r t h e u n i q u e I d e n t i t y C o n s t r a i n t ‘ { h t t p : / / s c h e m a s . m i c r o s o f t . c o m / a p p x / m a n i f e s t / f o u n d a t i o n / w i n d o w s 1 0 } C l a s s _ I d ‘ .[2/13/2019 11:24:18 AM] [Error][2/13/2019 11:24:18 AM] [Error][2/13/2019 11:24:18 AM] [Error][2/13/2019 11:24:18 AM] [Error][2/13/2019 11:24:18 AM] [Error][2/13/2019 11:24:18 AM] [Error][2/13/2019 11:24:18 AM] [Error][2/13/2019 11:24:18 AM] [Error][2/13/2019 11:24:18 AM] [Error] makepri.exe failed, exit code = -2146958844[2/13/2019 11:24:18 AM] [Error] Error occurred: Microsoft.Packaging.SDKUtils.ProcessRunner.ProcessRunnerException: Process makepri.exe failed with exit code -2146958844. 根据以下帖子的讨论，这个问题可能是转换工具的软件Bug。 https://techcommunity.microsoft.com/t5/MSIX-Packaging-and-Tools/Process-makepri-exe-failed-with-exit-code-2146958844/m-p/281091 参考资料： https://docs.microsoft.com/en-us//windows/msix/]]></content>
+      <categories>
+        <category>企业产品</category>
+      </categories>
+      <tags>
+        <tag>Intune</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Intune MDM证书]]></title>
+    <url>%2F2019%2F02%2F12%2FIntune-MDM%E8%AF%81%E4%B9%A6%2F</url>
+    <content type="text"><![CDATA[设备注册Intune成功以后，或获取到一张由Intune颁发的MDM证书。设备利用这张证书与Intune通讯。 Windows在Windows 10设备上，打开MMC管理工具，添加计算机证书管理组件，可以在Certificates(Local Computer) - Personal - Certificates中，查看该MDM证书。 该证书的颁发者为：Microsoft Intune MDM Device CA, 有效期为1年。]]></content>
+      <categories>
+        <category>企业产品</category>
+      </categories>
+      <tags>
+        <tag>Intune</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[利用Intune部署和安装Win32软件]]></title>
+    <url>%2F2019%2F02%2F12%2F%E5%88%A9%E7%94%A8Intune%E9%83%A8%E7%BD%B2%E5%92%8C%E5%AE%89%E8%A3%85Win32%E8%BD%AF%E4%BB%B6%2F</url>
+    <content type="text"><![CDATA[Intune除了支持微软商店的软件以外，也支持传统的Win32软件部署和安装，如.msi和.exe格式的安装程序。 下面以Google Chrome为例，介绍整个配置和部署过程。 转换安装程序的格式为.intunewin 下载程序格式转换工具Microsoft Win32 Content Prep Tool，并将其保存到D:\Download目录。 在D:\Download目录下，创建新目录Chrome 将文件GoogleChromeStandaloneEnterprise64.msi和Chrome.jpg拷贝到D:\Download\Chrome目录 用管理员权限打开CMD命令行窗口。 在命令行窗口中，进入D:\Download目录，并输入以下命令： IntuneWinAppUtil -c D:\Download\Chrome -s GoogleChromeStandaloneEnterprise64.msi -o D:\Download\Chrome 注:-c 安装文件所在的目录，安装文件除了包括.exe或者.msi文件以外，还有如License.txt, .ini文件等等。 -s 安装文件，例如setup.exe或setup.msi -o 输出.intunewin文件的保存位置 运行命令后的输入结果。 在D:\Download目录下，可以看到生成的新文件GoogleChromeStandaloneEnterprise64.intunewin。 上传.intunewin文件 在Intune门户中，选择Client apps &gt; Apps，点击Add。 选择App类型为Windows app(Win32) 上传.intunewin文件 输入App信息 输入安装和卸载程序的命令。 如果是.msi的安装程序，安装命令会自动填写。 如果是.exe的安装程序，需要手工输入命令 安装命令必须添加/slient参数，否则安装会失败 卸载程序的命令可以在已安装该软件的电脑上查看 选择硬件架构和操作系统等要求。 程序是否已经安装的检测规则。 MSI produce code会自动读取出来，不需要手工输入。 安装完成后的返回代码，使用默认值即可。 将该App分配给用户组 客户端安装软件 打开Company Portal应用。 选择Google Chrome。 点击Install安装Google Chrome。 系统提示开始安装软件。 系统提示软件安装成功。]]></content>
+      <categories>
+        <category>企业产品</category>
+      </categories>
+      <tags>
+        <tag>Intune</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Kiosk模式下运行Kiosk Browser]]></title>
+    <url>%2F2019%2F02%2F11%2FKiosk%E6%A8%A1%E5%BC%8F%E4%B8%8B%E8%BF%90%E8%A1%8CKiosk-Browser%2F</url>
+    <content type="text"><![CDATA[配置和推送Kiosk Browser应用 在Intune门户中，选择Client apps &gt; Apps，搜索关键字”Kiosk”，查找Kiosk Browser应用。 选择Kiosk Browser，选择Assignment. 选择Add group，选择Assignment type为Required，并选择设备组。 保存配置 配置和推送Kiosk配置文件 在Intune门户中，选择Device configuration - Profiles，选择Create profile。 选择Profile type为Kiosk。 配置Kiosk Browser Settings。 客户端查看结果 用Azure AD账号登陆并同步设备，并确认Kiosk Browser已经成功安装。 重启设备。]]></content>
+      <categories>
+        <category>企业产品</category>
+      </categories>
+      <tags>
+        <tag>Intune</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Intune-自动启用BitLocker加密]]></title>
+    <url>%2F2019%2F02%2F11%2FIntune-%E8%87%AA%E5%8A%A8%E5%90%AF%E7%94%A8BitLocker%2F</url>
+    <content type="text"><![CDATA[通过Intune，可以为Windows设备配置BitLocker参数，并且自动启用BitLocker。 在Intune门户中， BitLocker策略的路径如下： Microsoft Intune &gt; Device configuration - Profiles &gt; Create profile &gt; Endpoint protection BitLocker策略的设置主要包括以下几部分： Windows Settings —— 启用BitLocker设备加密。 BitLocker base settings —— 通用BitLocker加密设置，适用于所有驱动器类型。 BitLocker OS drive settings —— 操作系统所在驱动器的加密设置，如C盘。 BitLocker fixed data-drive settings —— 数据驱动器的加密设置，如D, E盘等。 BitLocker removable data-drive settings —— 可移动磁盘的加密设置 系统盘启用BitLocker加密 登陆Intune门户，选择Microsoft Intune &gt; Device configuration - Profiles，点击“Create profile”创建策略，输入名称，选择Platform为“Windows 10 and later”，选择“Profile type”为“Endpoint protection”。 选择“Windows Encryption”，打开BitLocker设置相关的页面。 在“Windows Settings”中，设置“Encrypt devices”为“Require”。 在“BitLocker base settings”中，设置以下参数。 Warning for other disk encryption: Block Allow standard users to enable encryption during Azure AD Join: Allow Configure encryption methods: Enable Encryption for operating system drives: XTS-AES-256-bit 将策略分配给设备组。 在客户端电脑上，用管理员权限打开CMD，并输入以下命令。该命令可以查看加密的状态和参数。 manage-bde -status c:]]></content>
+      <categories>
+        <category>企业产品</category>
+      </categories>
+      <tags>
+        <tag>Intune</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[如何更改Intune门户中的设备名称]]></title>
+    <url>%2F2019%2F02%2F08%2F%E5%A6%82%E4%BD%95%E6%9B%B4%E6%94%B9Intune%E9%97%A8%E6%88%B7%E4%B8%AD%E7%9A%84%E8%AE%BE%E5%A4%87%E5%90%8D%E7%A7%B0%2F</url>
+    <content type="text"><![CDATA[根据文档介绍，用户可以通过Intune Company Portal for Windows app或者 Intune Company Portal website重命名设备。但是，该操作只是设置了一个别名，以便于用户区分自己的设备，并不会真的更改设备名或者主机名。因此，该通过该重命名操作更改后的设备名称，并不会同步并更新Intune门户的设备名。 Windows在Intune门户中，在Devices &gt; All devices页面中，设备的名称通常就是计算机的主机名。管理员无法在该界面中直接更改设备名称。但是，可以通过以下方式更改： 登录到Windows设备，更改计算机名称。可以在系统属性中更改计算机名称，或者使用PowerShell命令。 Rename-Computer -NewName “Workstation001” 打开Settings应用，在Access work and school界面中，手动触发与Intune的同步操作。或者，也可以等系统自动同步。 在Intune门户中，在Devices &gt; All devices和Devices &gt; Azure AD devices页面中的设备名称都会自动更新为新设置的主机名。 iOS在Intune门户中，选择Devices &gt; All devices &gt; &gt; More &gt; Rename device(Supervised only), 输入新的设备名称。 Android在Android设备中直接更改设备名称。]]></content>
+      <categories>
+        <category>企业产品</category>
+      </categories>
+      <tags>
+        <tag>Intune</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Intune PowerShell scripts-设置时区]]></title>
+    <url>%2F2019%2F02%2F08%2FIntune-PowerShell-scripts-%E8%AE%BE%E7%BD%AE%E6%97%B6%E5%8C%BA%2F</url>
+    <content type="text"><![CDATA[创建PowerShell脚本Set-TimeZone -Name &quot;China Standard Time&quot; 上传脚本到Intune 在Intune门户中，选择Device configuration &gt; PowerShell Scripts &gt; Add 输入策略名称和描述，上传脚本。脚本的大小必须小于200 KB (ASCII) or 100 KB (Unicode) 选择脚本是否以当前登陆用户运行， 选择“No” 保存策略 将策略分配给用户组 查看脚本运行结果在Intune门户中，可以分别对设备和用户查看脚本的运行结果。 如何确认Intune Management Extension已经安装并运行Intune为用户或者设备指派策略后，客户端会自动下载和安装Intune Management Extension。 Intune Management Extension会自动下载到以下目录： %ProgramFiles(x86)%\Microsoft Intune Management Extension 打开Services.msc, 可以看到Microsoft Intune Management Extension已经在运行。 客户端检查策略的时间间隔Intune Management Extension每1小时会向Intune检查PowerShell脚本或者策略的变化。 什么时候PowerShell脚本会自动运行只有当计算机重启，或者重启Microsoft Intune Management Extension服务以后，PowerShell脚本才会运行 如何查看日志日志的路径： \ProgramData\Microsoft\IntuneManagementExtension\Logs 在该目录下，可以看到两个日志文件：AgentExecutor.log和IntuneManagementExtension.log。 用CMTrace日志分析工具，打开IntuneManagementExtension.log文件 从日志内容中，可以看到Intune Management Extension获取到了1条策略，该策略中的PowerShell脚本被存储在以下路径：Script file C:\Program Files (x86)\Microsoft Intune Management Extension\Policies\Scripts\da76b36f-9ac7-453f-9406-ba173e26a608_a9cfc067-3e48-4fa0-bf2d-2bad21fa9e0d.ps1 is generated. 用CMTrace日志分析工具，打开AgentExecutor.log文件。 日志中的以下内容，说明脚本已经运行成功。 Powershell script is successfully executed.]]></content>
+      <categories>
+        <category>企业产品</category>
+      </categories>
+      <tags>
+        <tag>Intune</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[常用命令]]></title>
+    <url>%2F2019%2F02%2F07%2F%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4%2F</url>
+    <content type="text"><![CDATA[Windowswmic bios get serialnumber 获取计算机的序列号 wmic csproduct get name 获取计算机的型号 Rename-Computer -NewName “new computer name” 计算机重命名 manage-bde -status c: 查看BitLocker状态 [Guid]::NewGuid().ToString() 在SCVMM中，有些命令需要用到JobGroupID，通过这个命令可以创建一个唯一的JobGroupID]]></content>
+      <categories>
+        <category>企业产品</category>
+      </categories>
+  </entry>
+  <entry>
+    <title><![CDATA[Windows AutoPilot 概述]]></title>
+    <url>%2F2019%2F02%2F06%2FWindows-AutoPilot-%E6%A6%82%E8%BF%B0%2F</url>
+    <content type="text"><![CDATA[Windows AutoPilot是一种新的Windows设备部署方式，只适用于Windows10 1703或者以上的版本。 当企业购买了新的电脑后，在传统的IT管理方式中，IT管理员需要为电脑重新安装企业定制的镜像，并且安装各种企业软件，加入公司域，并推送组策略等。然后，IT管理员再将电脑分发给员工。 通过Windows AutoPilot的部署方式，企业购买的新电脑将直接发送给员工。IT管理员只需要利用Intune将配置文件远程分配给每台电脑，而员工则只需要将电脑开机，并连接网络，电脑自动完成配置以后，员工输入账号和密码就可以登录使用。 简单来说，Windows AutoPilot主要分为三步： 1. 设备注册 设备注册需要设备供应商或者IT管理员将硬件ID上传到Windows AutoPilot Deployment service. 可以通过以下途径上传硬件ID: Microsoft Intune Microsoft Store for Business Microsoft 365 Business &amp; Office 365 Admin Partner Center 其中，设备供应商可以通过Partner Center上传硬件ID。 2. 创建和分发配置文件 通过创建配置文件，可以自定义Windows系统的OOBE过程，改善用户体验。 3. 开机使用 员工开机后，只需要输入账号和密码，就可以立即使用电脑。 Windows AutoPilot可以为企业带来以下好处： 自动将设备加入Azure AD或者企业AD。 自动将设备注册到Intune。 限制Azure AD用户拥有本地管理员权限。 定制OOBE的内容 为企业现有的Windows 7和Windows 8.1设备部署Windows 10系统。 User-Driven模式 Self-deploying模式，适用于公用的电脑，如Kiosk等 Windows AutoPilot Reset]]></content>
+      <categories>
+        <category>企业产品</category>
+      </categories>
+      <tags>
+        <tag>Intune</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Intune Enrollment: iOS Apple Configurator]]></title>
+    <url>%2F2019%2F02%2F05%2FIntune-Enrollment-iOS-Apple-Configurator%2F</url>
+    <content type="text"><![CDATA[Intune支持用Apple Configurator将iOS设备注册到Intune服务。如果采用这种方式，需要将iOS设备通过USB线连接到Mac电脑。 用Apple Configurator注册设备共有两种方式： Setup Assistant Enrollment - 需要将设备恢复出厂设置 Direct enrollment - 不需要将设备恢复出厂设置，但是只支持no user affinity 创建Apple Configurator Profile 在Intune门户中，选择Device enrollment &gt; Apple enrollment &gt; Apple Configurator &gt; Profiles &gt; Create. 输入名称，选择Enroll with user affinity，设置“Authenticate with Company Portal instead of Apple Setup Assistant”为Yes 在Azure AD中创建动态组，规则参数enrollmentProfileName设置为Equles配置文件名称。 上传设备序列号 在iOS设备上，打开设置，选择通用 - 关于，获取iOS设备序列号 创建csv文件,文件内容如下 F7TLWCLBX196,device details 在Intune门户中，选择Device enrollment &gt; Apple enrollment &gt; Apple Configurator &gt; Devices, 选择Profile, 并上传csv文件。 上传完成后，可以看到设备的序列号等信息 在Profile的Devices中，可以看到已经分配该配置文件的设备。 导出Apple Configurator Profile，拷贝Profile URL 用Apple Configurator配置iOS设备 将iOS设备恢复出厂设置。 用USB线将iOS设备连接到Mac电脑 打开Apple Configurator软件，打开偏好设置 选择服务器 点击”+”创建服务器 输入名称，在“主机名或URL”输入导出的Profile URL 创建完成后，可以看到获取到的证书 在Apple Configurator主界面中，选中iPhone设备，并选择“准备” 选择“手动配置”，点击下一步 选择服务器“Intune”，点击下一步 选择“新建组织”，点击下一步 点击“跳过” 输入组织名称，点击下一步 选择“生成新的监督身份”，点击下一步 配置iOS设置助理，点击“准备” 完成iPhone设置助理 打开iPhone，选择语言为简体中文 选择国家和地区 选择键盘 选择应用配置 创建密码 启用定位服务 开始使用 接下来，需要安装Company Portal,打开Company Portal后，输入用户名和密码登陆，否则，设备在Intune中,Compliance状态显示为Not Evaluated. 输入Apple ID, 登陆iTunes 打开Company Portal, 输入Azure AD帐号和密码 选择“开始”，完成设备管理 在Intune门户中查看，可以看到设备已经显示为Compliant.]]></content>
+      <categories>
+        <category>企业产品</category>
+      </categories>
+      <tags>
+        <tag>Intune</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Intune Retire, Wipe, Fresh Start and AutoPilot Reset]]></title>
+    <url>%2F2019%2F02%2F05%2FIntune-Retire-Wipe-Fresh-Start-and-AutoPilot-Reset%2F</url>
+    <content type="text"><![CDATA[RetireRetire用于删除设备上的公司数据，保留个人数据。 公司数据包括企业应用数据，设置，配置文件等。 Retire不适用于加入Azure AD的Windows 10 设备。 Retire比较适合用于个人设备。 WipeWipe将设备恢复出厂设置。 执行Wipe操作后，设备立刻自动重启，并进行重置。 重置完成后，需要重新经历整个OOBE过程。 对于Windows 10 1709或以上版本的设备，还可以选择“Retain enrollment state and user account”，该选项将保留该设备在Intune的注册状态。 重置完成后，用户可以直接输入用户名和密码登录。 AutoPilot ResetAutoPilot Reset会删除所有的数据和配置，保留设备在Azure AD和Intune中的信息。要执行该操作，必须： 设备加入Azure AD 设备被Intune管理 配置“Enrollment status page” 执行AutoPilot Reset的操作后，客户端设备会收到提示信息，约45分钟后设备就会自动重启，并开始重置设置。 注：重置完成后，设备使用原有的主机名 重置完成后，设备会自动进行配置，不需要用户进行干预。 最后，用户只需要输入用户名和密码登录系统。 Fresh StartFresh Start可以删除OEM设备上预装的Win32程序。如果选择“Retain user data on this device”，设备将保留Azure AD和Intune注册信息。否则， 设备将被重置为OOBE状态。]]></content>
+      <categories>
+        <category>企业产品</category>
+      </categories>
+      <tags>
+        <tag>Intune</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Intune Enrollment: Windows AutoPilot]]></title>
+    <url>%2F2019%2F02%2F01%2FIntune%20Enrollment%E2%80%94Windows%20AutoPilot%2F</url>
+    <content type="text"><![CDATA[获取设备的硬件信息 用管理员权限打开PowerShell, 然后运行以下命令： md c:\HWID # 在C盘根目录下创建名为HWID的文件夹 Set-Location c:\HWID # 进入目录C:\HWID Set-ExecutionPolicy Unrestricted # 设置PowerShell运行的权限 Install-Script -Name Get-WindowsAutopilotInfo #下载并安装脚本Get-WindowsAutopilotInfo Get-WindowsAutopilotInfo.ps1 -OutputFile AutopilotHWID.csv #获取设备的硬件信息 在Hyper-V主机上，通过Hyper-V Manager关闭VM。或者，通过PowerShell命令关闭VM。 Stop-VM -VMName WindowsAutopilot 用以下命令，挂载VHD文件 Mount-VHD -path (Get-VMHardDiskDrive -VMName WindowsAutopilot).Path 打开资源管理器，可以看到一个新的驱动器盘符，例如F:。打开该盘符，可以找到并拷贝文件AutopilotHWID.csv 卸载VHD文件，并启动VM Dismount-VHD -path (Get-VMHardDiskDrive -VMName WindowsAutopilot).Path Start-VM -VMName WindowsAutopilot 注：除了挂载VHD的方式以外，也可以直接在C:\HWID目录中，通过网络共享，将AutopilotHWID.csv文件拷贝出来。 重置设备 打开Settings应用，并导航到Update&amp;Security - Recovery 选择”Reset this PC”下面的”Get started” 点击”Remove everything” 点击”Remove files and clean the drive” 点击”Next” 点击”Reset” 开始重置设备 配置Azure AD Company Branding通过浏览器，访问Azure AD门户，导航到Home &gt; MSHybrid - Company branding，编辑默认的Company Branding。 配置Intune上传设备的硬件信息 通过浏览器，访问Intune门户，导航到Home &gt; Microsoft Intune &gt; Device enrollment - Windows enrollment Windows &gt; Autopilot devices 点击”Import”，上传AutopilotHWID.csv 上传成功后，点击”Sync”，会出现新设备的序列号，型号等信息。上传通常需要等待5-10分钟。 选择该新设备，并点击”Assign User”。在执行OOBE过程中，设备会自动填写指定的用户名，用户只需填入密码。 在Azure AD的设备列表中，会出现一个设备条目，该条目的Name为新设备的序列号。 创建设备组 在Azure AD门户中，新建一个组AutoPilot-Devices 点击”Add members”，并查找设备序列号，添加设备 配置设备Profile 在Intune门户中，导航到Home &gt; Microsoft Intune &gt; Device enrollment - Windows enrollment &gt; Windows Autopilot deployment profiles 点击”Create profile” Deployment mode: User-Driven Join to Azure AD as: Azure AD joined 点击配置”Out-of-box experience (OOBE)” 点击新建的Profile, 并点击”Assignments”，选择设备组AutoPilot-Devices 完成设备初始配置 选择”United States” 选择”US” 选择”Skip” 输入密码 等待设备完成配置后，进入系统。]]></content>
+      <categories>
+        <category>企业产品</category>
+      </categories>
+      <tags>
+        <tag>Intune</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[SCVMM与Azure集成——管理云端虚拟机（二）]]></title>
+    <url>%2F2019%2F02%2F01%2FSCVMM%E4%B8%8EAzure%E9%9B%86%E6%88%90%E2%80%94%E2%80%94%E7%AE%A1%E7%90%86%E4%BA%91%E7%AB%AF%E8%99%9A%E6%8B%9F%E6%9C%BA%EF%BC%88%E4%BA%8C%EF%BC%89%2F</url>
+    <content type="text"><![CDATA[在SCVMM与Azure集成——管理云端虚拟机（一）中，介绍了用基于证书（管理证书）认证和授权的方式来对Azure端的虚拟机进行管理。 在VMM1801中，我们可以采用基于Azure AD的认证和授权对ARM和区域相关的Azure进行管理。 #准备工作 SCVMM 1801 创建Azure AD应用 应用ID和Key Azure订阅ID Azure目录ID 为应用添加“订阅”的所有者权限 创建Azure AD应用 登录Azure Active Directory门户，在“应用注册”中，点击“新应用注册” 输入新应用的名称和登录URL 查看已注册应用的ID 点击“设置” - “密钥”，生成并记录密钥 Azure目录ID通过登录Azure Active Directory 门户，并查看“属性”，可以看到目录ID。 Azure订阅ID请参考SCVMM与Azure集成——管理云端虚拟机（一）查看Azure订阅ID。 为应用添加“订阅”的所有者权限 登录Azure门户 在“所有服务”中，查找“订阅” 选择“访问控制（标识和访问管理）” 为应用添加订阅所有者权限 将SCVMM和Azure集成 在SCVMM Console中，选择“VMs and Services” - “Azure Subscriptions”。点击“Add Subscription”。 选择“Management using Azure AD authentication”，并输入相应的信息 添加成功后，可以看到虚拟机的信息和状态。]]></content>
+      <categories>
+        <category>企业产品</category>
+      </categories>
+      <tags>
+        <tag>SCVMM</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[SCVMM与Azure集成——管理云端虚拟机（一）]]></title>
+    <url>%2F2019%2F02%2F01%2FSCVMM%E4%B8%8EAzure%E9%9B%86%E6%88%90%E2%80%94%E2%80%94%E7%AE%A1%E7%90%86%E4%BA%91%E7%AB%AF%E8%99%9A%E6%8B%9F%E6%9C%BA%EF%BC%88%E4%B8%80%EF%BC%89%2F</url>
+    <content type="text"><![CDATA[SCVMM是一套企业级的虚拟基础架构管理系统，而Azure则是一个公有云平台。通过将Azure订阅与SCVMM集成，我们将可以实现在SCVMM Console 中, 统一管理部署在Azure上的虚拟机。 通过将SCVMM与Azure集成，我们只可以管理通过Azure Classic Portal部署的虚拟机。对于Azure虚拟机，我们主要可以执行以下操作： 启动(Start) 关闭(Stop) 关机(Shut Down) 重启(Restart) 用RDP连接(Connect via RDP) 首先，在进行两者的集成之前，我们需要完成以下准备工作： Azure订阅ID SCVMMN能访问Internet Service Administrator - 拥有Service Administrator权限的Azure账号可以获取到Azure subscription ID和管理证书的信息。 管理证书（Management certificate） 获取Azure订阅ID 登录Azure门户，请确保登录账号至少是Service Administrator 在“所有服务”中，查找“订阅” 在“订阅”页面中，可以查看订阅ID 管理证书通过将管理证书与Azure关联后，VMM才可以访问Azure的服务管理API。证书必须符合X.509 v3规范。 在安装有VMM Server的服务器上，通过以下PowerShell命令创建一张自签名的证书，证书将保存在本地计算机的个人目录下。 123$cert = New-SelfSignedCertificate -DnsName yourdomain.cloudapp.net -CertStoreLocation &quot;cert:\LocalMachine\My&quot; -KeyLength 2048 -KeySpec &quot;KeyExchange&quot;$password = ConvertTo-SecureString -String &quot;your-password&quot; -Force -AsPlainTextExport-PfxCertificate -Cert $cert -FilePath &quot;.\my-cert-file.pfx&quot; -Password $password 将导出的PFX证书文件安装到VMM Console所在的计算机上，证书存储位置：当前用户-个人 用以下命令导出格式为.cer的证书文件。Export-Certificate -Type CERT -Cert $cert -FilePath .\my-cert-file.cer 将导出的cer证书文件上传到Azure。在“订阅” - “管理证书”中，上传证书。 SCVMM和Azure集成 在SCVMM Console中，选择“VMs and Services” - “Azure Subscriptions”。点击“Add Subscription”。 输入“Display name”， “Subscription ID”，并选择相应的管理证书。 如果添加Azure订阅成功，就可以看到VM的数量，以及最新的状态。]]></content>
+      <categories>
+        <category>企业产品</category>
+      </categories>
+      <tags>
+        <tag>SCVMM</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[树莓派搭建BT下载服务器]]></title>
+    <url>%2F2019%2F01%2F20%2F%E6%A0%91%E8%8E%93%E6%B4%BE%E6%90%AD%E5%BB%BABT%E4%B8%8B%E8%BD%BD%E6%9C%8D%E5%8A%A1%E5%99%A8%2F</url>
+    <content type="text"><![CDATA[安装1sudo apt-get install transmission-daemon 配置修改配置文件：/etc/transmission-daemon/settings.json 123&quot;download-dir&quot;: &quot;/mnt/HDD160GB/Video&quot;, #配置下载目录，下载后的文件将存放在该目录下&quot;rpc-username&quot;: &quot;transmission&quot;, #登录BT Web界面的用户名&quot;rpc-password&quot;: &quot;transmission&quot;, #设置密码，保存配置文件后，密码自动变成密文 重启服务12sudo service transmission-daemon reloadsudo service transmission-daemon restart 访问方式通过浏览器访问地址：http://192.168.1.3:9091/ ，用户名和密码：transmission/transmission]]></content>
+      <categories>
+        <category>智能家居</category>
+      </categories>
+      <tags>
+        <tag>RaspberryPi</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[树莓派搭建DLNA]]></title>
+    <url>%2F2019%2F01%2F20%2F%E6%A0%91%E8%8E%93%E6%B4%BE%E6%90%AD%E5%BB%BADLNA%2F</url>
+    <content type="text"><![CDATA[安装mimidlna在命令行输入以下命令：12sudo apt-get updatesudo apt-get install minidlna 配置设置/etc/minidlna.conf文件，在文件尾部添加如下内容： 12345678#A表示这个目录是存放音乐的，当minidlna读到配置文件时，它会自动加载这个目录下的音乐文件media_dir=A,/samba/DLNA/Musicmedia_dir=P,/samba/DLNA/Picturemedia_dir=V,/samba/DLNA/Video#配置minidlna的数库数据的存放目录db_dir=/samba/DLNA/db#配置日志目录log_dir=/samba/DLNA/log 以上配置中，/samba/DLNA/* 这个目录可以自定义，一定要确保目录存在且设置权限为可读写。例子中的是已经配置好的 Samba 所在的目录，这样可以把 DLNA 目录共享在局域网之中，更方便的管理媒体文件。 随机启动1sudo update-rc.d minidlna defaults 常用命令启动 minidlna 服务 1sudo service minidlna start 当你修改配置文件及媒体资源更新时，需要强制刷新，以便minidlna将最新的媒体文件进行索引 1sudo service minidlna force-reload 取消 minidlna 的开机自动启动 1sudo update-rc.d -f minidlna remove 停止 minidlna 服务 1sudo service minidlna stop 停止 minidlna 所有进程 1sudo killall minidlna 卸载 minidlna 1sudo apt-get remove --purge minidlna]]></content>
+      <categories>
+        <category>智能家居</category>
+      </categories>
+      <tags>
+        <tag>RaspberryPi</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Git命令显示中文乱码问题]]></title>
+    <url>%2F2019%2F01%2F05%2FGit%E5%91%BD%E4%BB%A4%E6%98%BE%E7%A4%BA%E4%B8%AD%E6%96%87%E4%B9%B1%E7%A0%81%E9%97%AE%E9%A2%98%2F</url>
+    <content type="text"><![CDATA[使用Git命令时，中文显示为乱码。 12345678910$ git statusOn branch hexoYour branch is up to date with &apos;origin/hexo&apos;.Untracked files: (use &quot;git add &lt;file&gt;...&quot; to include in what will be committed) &quot;\346\240\221\350\216\223\346\264\276\346\214\202\350\275\275\347\247\273\345\212\250\347\241\254\347\233\230.md&quot;nothing added to commit but untracked files present (use &quot;git add&quot; to track) 解决方法 在命令行中输入以下命令： 1git config --global core.quotepath false 12345678$ git statusOn branch hexoYour branch is up to date with &apos;origin/hexo&apos;.Changes to be committed: (use &quot;git reset HEAD &lt;file&gt;...&quot; to unstage) new file: 树莓派挂载移动硬盘.md]]></content>
+      <categories>
+        <category>智能家居</category>
+      </categories>
+      <tags>
+        <tag>RaspberryPi</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[树莓派挂载移动硬盘]]></title>
+    <url>%2F2019%2F01%2F05%2F%E6%A0%91%E8%8E%93%E6%B4%BE%E6%8C%82%E8%BD%BD%E7%A7%BB%E5%8A%A8%E7%A1%AC%E7%9B%98%2F</url>
+    <content type="text"><![CDATA[查看移动硬盘首先，将移动硬盘通过USB数据线接到树莓派的USB接口。在命令行输入以下命令查看移动硬盘。从输出结果可以看到，移动硬盘有2个分区：sda1和sda2, 磁盘设备为sda。 1sudo fdisk -l 12345678910111213141516Device Boot Start End Sectors Size Id Type/dev/mmcblk0p1 8192 122879 114688 56M c W95 FAT32 (LBA)/dev/mmcblk0p2 122880 31116287 30993408 14.8G 83 LinuxGPT PMBR size mismatch (312581806 != 312581807) will be corrected by w(rite).Disk /dev/sda: 149.1 GiB, 160041885696 bytes, 312581808 sectorsUnits: sectors of 1 * 512 = 512 bytesSector size (logical/physical): 512 bytes / 512 bytesI/O size (minimum/optimal): 512 bytes / 512 bytesDisklabel type: gptDisk identifier: 8001D93D-B7B7-48E7-91B2-1F99037AF238Device Start End Sectors Size Type/dev/sda1 40 409639 409600 200M EFI System/dev/sda2 409640 312319623 311909984 148.7G Apple HFS/HFS+ 格式化移动硬盘格式化磁盘12345678910111213141516171819202122pi@raspberrypi ~ $ sudo fdisk /dev/sdaWelcome to fdisk (util-linux 2.25.2).Changes will remain in memory only, until you decide to write them.Be careful before using the write command./dev/sda: device contains a valid &apos;ext4&apos; signature, it&apos;s strongly recommended to wipe the device by command wipefs(8) if this setup is unexpected to avoid possible collisions.Device does not contain a recognized partition table.Created a new DOS disklabel with disk identifier 0x448ea5cd.Command (m for help): nPartition type p primary (0 primary, 0 extended, 4 free) e extended (container for logical partitions)Select (default p): pPartition number (1-4, default 1): First sector (2048-312581807, default 2048): Last sector, +sectors or +size&#123;K,M,G,T,P&#125; (2048-312581807, default 312581807): Created a new partition 1 of type &apos;Linux&apos; and of size 149.1 GiB. 创建文件系统ext4123456789101112pi@raspberrypi ~ $ sudo mkfs.ext4 /dev/sda1mke2fs 1.43.3 (04-Sep-2016)Creating filesystem with 39072470 4k blocks and 9773056 inodesFilesystem UUID: 4de0e171-8799-4d96-b4b5-dc8cc1b5302eSuperblock backups stored on blocks: 32768, 98304, 163840, 229376, 294912, 819200, 884736, 1605632, 2654208, 4096000, 7962624, 11239424, 20480000, 23887872Allocating group tables: done Writing inode tables: done Creating journal (262144 blocks): doneWriting superblocks and filesystem accounting information: done 为分区设置标签1sudo e2label /dev/sda1 HDD160GB 挂载移动硬盘 创建挂载目录HDD160GB 1mkdir /mnt/HDD160GB 编辑/etc/fstab 1sudo vi /etc/fstab 在/etc/fstab中添加以下内容, UUID可以在创建文件系统时查看。 1UUID=4de0e171-8799-4d96-b4b5-dc8cc1b5302e /mnt/HDD160GB ext4 defaults 0 0 重启设备后，可以看到移动硬盘已经挂载成功。 1234567891011pi@raspberrypi ~ $ df -hFilesystem Size Used Avail Use% Mounted on/dev/root 15G 8.3G 5.7G 60% /devtmpfs 214M 0 214M 0% /devtmpfs 218M 0 218M 0% /dev/shmtmpfs 218M 4.8M 213M 3% /runtmpfs 5.0M 4.0K 5.0M 1% /run/locktmpfs 218M 0 218M 0% /sys/fs/cgroup/dev/sda1 146G 2.6G 136G 2% /mnt/HDD160GB/dev/mmcblk0p1 56M 20M 37M 36% /boottmpfs 44M 0 44M 0% /run/user/1000]]></content>
+      <categories>
+        <category>智能家居</category>
+      </categories>
+      <tags>
+        <tag>RaspberryPi</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[个人博客 — Hexo多终端同步篇]]></title>
+    <url>%2F2019%2F01%2F01%2F%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2-%E2%80%94-Hexo%E5%A4%9A%E7%BB%88%E7%AB%AF%E5%90%8C%E6%AD%A5%E7%AF%87%2F</url>
+    <content type="text"><![CDATA[如果需要在多台终端设备上发布博客，那么就需要将Hexo源代码发布到GitHub，并且在多台终端设备之间同步。 配置远程仓库 在GitHub上创建一个新的分支，例如，分支名称为Hexo 将Hexo分支设置成默认分支 配置本地仓库 注意这里有个巨大的坑！！！如果你用的是第三方的主题theme，是使用git clone下来的话，要把主题文件夹下面把.git文件夹删除掉，不然主题无法push到远程仓库，导致你发布的博客是一片空白 在初次安装Hexo的设备上，初始化博客所在目录 git init 添加本地所有文件到仓库 git add -A 添加远程仓库我执行该命令后，提示fatal: remote origin already exists.可以忽略该报错。 git remote add origin git@github.com:yourname/yourname.github.io.git 添加本地仓库分支Hexo git branch hexo 将本地Hexo分支的文件强制推送到远程Hexo分支 git push origin hexo -f 切换到Hexo分支 git checkout -b hexo 上传完成之后，就会拥有两个远程的分支：master和hexo，其中master是部署成博客的分支；hexo是我们可以clone到其他电脑或其他系统的hexo源文件的分支，而且我们已经将它设置成默认仓库。 多终端同步和发布博客 在其它终端设备上clone远程分支hexo到本地 git clone -b hexo git@github.com:yourname/yourname.github.io.git 进入本地仓库执行hexo安装 npm install 先将远程分支同步到本地hexo分支 git pull origin hexo 编辑本地博客后，同步到远程hexo分支 git add &quot;blog files&quot; git commit -m &quot;comments&quot; git push origin hexo 发布博客 hexo g -d]]></content>
+      <categories>
+        <category>互联网</category>
+      </categories>
+      <tags>
+        <tag>Blog</tag>
+        <tag>Hexo</tag>
+        <tag>GitHub</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Python学习书单]]></title>
+    <url>%2F2019%2F01%2F01%2FPython%E5%AD%A6%E4%B9%A0%E4%B9%A6%E5%8D%95%2F</url>
+    <content type="text"><![CDATA[Python学习书单《Python深度学习》 作者：弗朗索瓦•肖莱 译者：张亮（hysic） 《Python3网络爬虫开发实战》 作者：崔庆才 《深度学习入门》 作者：斋藤康毅 译者：陆宇杰 《Python基础教程》 作者：Magnus Lie Hetland 译者：袁国忠 《Python数据科学手册》 作者：Jake VanderPlas 译者：陶俊杰、陈小莉 《Python机器学习基础教程》 作者：Andreas C. Müller , Sarah Guido 译者：张亮（hysic） 《Flask Web开发第二版》 作者：米格尔•格林贝格 译者：安道 《Python测试驱动开发》 作者：Harry J. W. Percival 译者：安道 《Python高性能》 作者：加布丽埃勒•拉纳诺 译者：袁国忠 《零压力学Python》 作者：布莱恩•奥弗兰德 译者：袁国忠 《Python编程：从入门到实践》 作者：Eric Matthes 译者：袁国忠 《Python编程快速上手——让繁琐工作自动化》 作者：AI Sweigart 《“笨办法”学Python（第3版）》 作者：泽德 A 肖 《像计算机科学家一样思考Python (第2版)》 作者：Allen B. Downey 《Python高级编程（第二版）》 作者：Michal Jaworski 《用Python写网络爬虫》 作者：Richard Lawson 译者：李斌 《Python自然语言处理》 作者：Steven Bird, Ewan Klein &amp; Edward Loper]]></content>
+      <categories>
+        <category>编程</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Git简介]]></title>
+    <url>%2F2018%2F12%2F31%2FGit%E7%AE%80%E4%BB%8B%2F</url>
+    <content type="text"><![CDATA[什么是GitGit是分布式版本管理系统。作者是Linux Torvalds。开发者可以将Git程序安装在本地计算机上，并通过Git管理自己的代码。 什么是GitHubGitHub是在线软件源代码托管服务，利用Git进行版本控制。]]></content>
+      <categories>
+        <category>编程</category>
+      </categories>
+      <tags>
+        <tag>Git</tag>
+        <tag>GitHub</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Python简介]]></title>
+    <url>%2F2018%2F12%2F31%2FPython%E7%AE%80%E4%BB%8B%2F</url>
+    <content type="text"><![CDATA[什么是PythonPython是一门解释性的，高级的， 通用型编程语言。作者是Guido_van_Rossum，荷兰人。 解释语言 解释语言(Interpreted Language)可以通过解释器直接运行代码，不像编译语言(Compiled Language)，需要预先将代码编译成机器指令。 高级语言 高级语言相对于机器语言而言，以自然语言为基础，使用一般人易于接受的文字来表示，可读性强。 通用语言 Python的应用范围十分广泛，例如，可应用于以下开发方向： Web应用 网络爬虫 大数据分析 机器学习和人工智能 物联网 TIOBE开发语言排行榜2018年12月]]></content>
+      <categories>
+        <category>编程</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[input和raw_input的比较]]></title>
+    <url>%2F2018%2F12%2F05%2Finput%E5%92%8Craw-input%E7%9A%84%E6%AF%94%E8%BE%83%2F</url>
+    <content type="text"><![CDATA[input会假设用户输入的是合法的Python表达式。 例子 &gt;&gt;&gt; name = input(&quot;What is your name? &quot;) What is your name? John Traceback (most recent call last): File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt; File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt; NameError: name &apos;John&apos; is not defined 正确的输入应该是”John” &gt;&gt;&gt; name = input(&quot;What is your name? &quot;) What is your name? &quot;John&quot; &gt;&gt;&gt; print name John raw_input会把所有的输入当作原始数据(raw data)，然后将其放入字符串中。 例子 &gt;&gt;&gt; input(&quot;Enter a number: &quot;) Enter a number: 3 3 &gt;&gt;&gt; raw_input(&quot;Enter a number: &quot;) Enter a number: 3 &apos;3&apos; 注意：由于raw_input会将原始数据放入字符串，因此，即使输入数字，也会转化为字符串。而input则不会将输入的数字转换为字符串。 例子1 &gt;&gt;&gt; x = raw_input(&quot;x: &quot;) x: 2 &gt;&gt;&gt; y = raw_input(&quot;y: &quot;) y: 3 &gt;&gt;&gt; x * y Traceback (most recent call last): File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt; TypeError: can&apos;t multiply sequence by non-int of type &apos;str&apos; 例子2 &gt;&gt;&gt; x = input(&quot;x: &quot;) x: 2 &gt;&gt;&gt; y = input(&quot;y: &quot;) y: 3 &gt;&gt;&gt; x * y 6]]></content>
+      <categories>
+        <category>编程</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[str和repr]]></title>
+    <url>%2F2018%2F12%2F05%2Fstr%E5%92%8Crepr%2F</url>
+    <content type="text"><![CDATA[str函数和repr函数是将值转换为字符串的两种机制。 str函数：把值转换为合理形式的字符串，以便用户可以理解。 repr函数：它会创建一个字符串，以合法的Python表达式的形式来表示值。 str例子： &gt;&gt;&gt; s = &apos;Hello, world!&apos; &gt;&gt;&gt; print str(s) Hello, world! &gt;&gt;&gt; print str(2.0/11.0) 0.181818181818 repr例子： &gt;&gt;&gt; s = &apos;Hello, world!&apos; &gt;&gt;&gt; print repr(s) &apos;Hello, world!&apos; &gt;&gt;&gt; print repr(2.0/11.0) 0.18181818181818182]]></content>
+      <categories>
+        <category>编程</category>
+      </categories>
+      <tags>
+        <tag>Python</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[喜鹊和寒号鸟]]></title>
+    <url>%2F2018%2F11%2F26%2F%E5%96%9C%E9%B9%8A%E5%92%8C%E5%AF%92%E5%8F%B7%E9%B8%9F%2F</url>
+    <content type="text"><![CDATA[第二天清早，喜鹊来到崖缝前劝寒号鸟：“趁天晴，快做窝。现在懒惰，将来难过。” 寒号鸟听了，心想：“昨天的北风差点要了我的小命，今天如果不做窝的话就熬不过去了。 说干就干，寒号鸟飞出去东寻西找，衔回来一些枯草，就立刻开始做窝了。经过了一段时间的努力，寒号鸟的窝终于完成了。喜鹊见了，高兴地说：“有备无患才能防患未然。” 时间过得很快，转眼间就到了寒冬腊月。寒号鸟的窝外下着暴雪，北方也像狮子一样狂吼，寒号鸟却在温暖的窝里度过了漫长的冬天。]]></content>
+      <categories>
+        <category>Lucas</category>
+      </categories>
+      <tags>
+        <tag>作文</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[父亲写的散文诗]]></title>
+    <url>%2F2018%2F11%2F22%2F%E7%88%B6%E4%BA%B2%E5%86%99%E7%9A%84%E6%95%A3%E6%96%87%E8%AF%97%2F</url>
+    <content type="text"><![CDATA[一九八四年 庄稼还没收割完 儿子躺在我怀里 睡得那么甜 今晚的露天电影 没时间去看 妻子提醒我 修修缝纫机的踏板 明天我要去邻居家 再借点钱 孩子哭了一整天了 闹着要吃饼干 蓝色的涤卡上衣 痛往心里钻 蹲在池塘边上 狠狠给了自己两拳 这是我父亲日记里的文字 这是他的青春留下 留下来的散文诗 多年以后我看着泪流不止 我的父亲已经老得像一个影子 一九九四年 庄稼早已收割完 我的老母亲去年离开了人间 儿子穿着白衬衫跑进了校园 可他最近有些心事 瘦了一大圈 想一想未来 我老成了一堆旧纸钱 那时的儿子 已是真正的男子汉 有个可爱的姑娘 和他成了家 但愿他们不要活得 如此艰难 这是我父亲日记里的文字 这是他的生命留下 留下来的散文诗 多年以后我看着泪流不止 可我的父亲已经老得像一个影子 这是我父亲日记里的文字 这是他的生命留下 留下来的散文诗 多年以后我看着泪流不止 可我的父亲在风中 像一张旧报纸 这是那一辈人 留下的足迹 几场风雨后 就要抹去了痕迹 这片土地曾让我泪流不止 它埋葬了多少人心酸的往事]]></content>
+      <categories>
+        <category>音乐</category>
+      </categories>
+      <tags>
+        <tag>歌词</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[用树莓派打造家用NAS]]></title>
+    <url>%2F2018%2F11%2F21%2F%E7%94%A8%E6%A0%91%E8%8E%93%E6%B4%BE%E6%89%93%E9%80%A0%E5%AE%B6%E7%94%A8NAS%2F</url>
+    <content type="text"><![CDATA[安装Raspbian系统 下载系统文件，下载地址：http://www.raspberrypi.org/downloads 解压系统zip文件，例如：unzip ~/Downloads/2014-09-09-wheezy-raspbian.zip 电脑插入SD卡后，在终端命令后，输入：df -h，查看SD卡的分区，例如，/dev/disk3s1 使用以下命令卸载分区 sudo diskutil unmount /dev/disk3s1 Using the device name of the partition work out the raw device name for the entire disk, by omitting the final “s1” and replacing “disk” with “rdisk” (this is very important: youwill lose all data on the hard drive on your computer if you get the wrong device name). Make sure the device name is the name of the whole SD card as described above, not just a partition of it (for example, rdisk3, not rdisk3sSimilarly you might have another SD drive name/number like rdisk2 or rdisk4, etc. – recheck by using the df -hcommand both before &amp; after you insert your SD card reader into your Mac if you have any doubts!): For example, /dev/disk3s1 =&gt; /dev/rdisk3 在终端命令行中，输入命令： sudo dd bs=1m if=~/Downloads/2014-09-09-wheezy-raspbian/2014-09-09-wheezy-raspbian.img of=/dev/rdisk3 卸载SD卡 SSH免密码登录 主机A(SSH Client), 主机B(SSH Server) 在主机A上生成公钥（id_rsa.pub）和私钥(id_rsa)对。 公钥和私钥文件的位置：~/.ssh/ bogon:.ssh andy$ ssh-keygen -t rsa -P &apos;&apos; Generating public/private rsa key pair. Enter file in which to save the key (/Users/andyliu/.ssh/id_rsa): Your identification has been saved in /Users/andyliu/.ssh/id_rsa. Your public key has been saved in /Users/andyliu/.ssh/id_rsa.pub. The key fingerprint is: 3f:46:7c:d2:45:35:d6:59:7f:34:b2:31:38:1d:c1:94 andyliu@bogon The key&apos;s randomart image is: +--[ RSA 2048]----+ | =B==B| | o E*o=| | ... o| | . . . .| | S + o | | o o | | + | | . . | | | +————————+ 将公钥文件id_rsa.pub拷贝到主机B。 bogon:.ssh andy$ scp id_rsa.pub pi@192.168.1.68:/home/pi/ 将id_rsa.pub的内容拷贝到.ssh/authorized_keys，如果没有该文件，可以手动创建。 cat id_rsa.pub &gt;&gt; .ssh/authorized_keys 用树莓派和aria2打造下载机Web服务器 安装服务器Nginx sudo apt-get update sudo apt-get install nginx 启动nginx服务 sudo /etc/init.d/nginx start Aria2 安装Aria2 sudo apt-get update sudo apt-get install aria2 git 配置文件 mkdir .aria2 touch .aria2/aria2.conf aria2.conf配置文件内容如下： continue=true daemon=true dir=/home/pi/Downloads/ //下载文件的存储目录 enable-rpc=true file-allocation=falloc force-sequential=true input-file=/home/pi/.aria2/aria2.session log=/home/pi/.aria2/aria2.log log-level=notice max-concurrent-downloads=2 max-connection-per-server=5 parameterized-uri=true rpc-allow-origin-all=true rpc-listen-all=true rpc-save-upload-metadata=false save-session=/home/pi/.aria2/aria2.session save-session-interval=60 split=5 disable-ipv6=true max-tries=0 //解决百度网盘下载经常中断问题 创建文件 touch /home/pi/.aria2/aria2.session touch /home/pi/.aria2/aria2.log 启动aria2 服务 aria2c --conf-path=/home/pi/.aria2/aria2.conf 配置aria2随机启动安装killall工具: sudo apt-get install psmisc sudo vi /etc/init.d/aria2 sudo chmod 755 /etc/init.d/aria2 让aria2服务随机自动启动 sudo update-rc.d aria2 defaults 脚本内容如下： #!/bin/sh ### BEGIN INIT INFO # Provides: aria2 # Required-Start: $remote_fs $network # Required-Stop: $remote_fs $network # Default-Start: 2 3 4 5 # Default-Stop: 0 1 6 # Short-Description: Aria2 Downloader ### END INIT INFO USER=pi CONF=/home/pi/.aria2/aria2.conf case &quot;$1&quot; in start) echo &quot;Start aria2c&quot; umask 0002 su - $USER -c &quot;aria2c --conf-path=$CONF -D&quot; ;; stop) echo &quot;Stopping aria2c, please wait...&quot; killall -w aria2c ;; restart) echo &quot;Stopping aria2c, please wait...&quot; killall -w aria2c echo &quot;Start aria2c&quot; umask 0002 su - $USER -c &quot;aria2c --conf-path=$CONF -D&quot; ;; *) echo &quot;$0 {start|stop|restart|status}&quot; ;; esac exit 安装Web界面 cd /var/www/html/ sudo git clone https://github.com/ziahamza/webui-aria2.git 注意：由于系统时间错误，可能导致下载时出现证书验证错误访问地址: http://192.168.1.68/webui-aria2/ 浏览器插件下载并安装插件 https://chrome.google.com/webstore/detail/baiduexporter/mjaenbjdjmgolhoafkohbhhbaiedbkno 配置NTPsudo vi /etc/ntp.conf server time.asia.apple.com 扩展root分区容量使用命令：sudo raspi-config，选择“Expand root partition to fill SD card”选项。 配置Samba文件共享 安装Samba服务 sudo apt-get update sudo apt-get install samba samba-common-bin 配置Samba服务随机启动 sudo update-rc.d aria2 defaults 配置共享目录（配置文件：/etc/samba/smb.conf）在配置文件的末端，添加以下内容： [Downloads] comment = Downloads valid users = pi,root path = /home/pi/Downloads browseable = yes writable = yes create mask = 0664 directory mask = 0775 创建Samba用户，必须是Linux已经存在的用户 sudo smbpasswd -a pi 重启Samba服务 sudo /etc/init.d/samba restart]]></content>
+      <categories>
+        <category>智能家居</category>
+      </categories>
+      <tags>
+        <tag>RaspberryPi</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[放风筝]]></title>
+    <url>%2F2018%2F11%2F21%2F%E6%94%BE%E9%A3%8E%E7%AD%9D%2F</url>
+    <content type="text"><![CDATA[春天的一个早晨，小花狗来到树下放风筝。可它一不小心把风筝缠在了树技间，小花狗非常焦急，用力拉着风筝线，可风筝纹丝不动，小花狗却累得满头大汗。小花狗非常苦恼，这时小花猫正巧路过，它着见了就走过去问：“小狗弟弟，你怎么了？” 小花狗回答：“我心爱的风筝被树枝卡住了。”小花猫拍着胸脯说：“爬树对我们小猫来说简直是小菜一碟，我去把风筝拿下来。”小花猫说完，就嗖的一下爬上树，把风筝拿了下来。“谢谢你，小猫哥哥！”小花狗非常感激地说。小花猫说：“不用谢，应该的。”]]></content>
+      <categories>
+        <category>Lucas</category>
+      </categories>
+      <tags>
+        <tag>作文</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[《小狗钱钱》-阅读笔记]]></title>
+    <url>%2F2018%2F11%2F21%2F%E3%80%8A%E5%B0%8F%E7%8B%97%E9%92%B1%E9%92%B1%E3%80%8B%E8%AF%BB%E5%90%8E%E6%84%9F%2F</url>
+    <content type="text"><![CDATA[对我而言，从学校到工作，我向来都没有任何理财的意识，当然也从来没有学习过相关的理财知识。随着岁月的沉淀，量入为出，你不理财，财不理你，股票，基金，这些词汇和观念逐渐进入我的脑海。虽然我对于理财有一些模糊的概念，通常是道听途说，但是，为什么要理财，如何理财等诸如此类问题，始终萦绕在我的脑海。 初次听说《小狗钱钱》这本书，是来自于同事的介绍。记得当时他只是提了一下书名，具体内容并没有详细介绍。也许是与这本书有缘，亦或者自己也想学点理财知识。于是，就决定买来读一读。虽然全书采用了讲故事的方式来介绍理财的理念和方法，但是，通俗易懂的文字反而非常适合对理财一窍不通的我。如果太专业的书籍，可能我反而不太容易坚持读完。 首先必须知道自己想要什么读完全书，令我印象比较深刻的是书中提到的一点，即首先我们必须知道自己想要什么。反思自己，忙忙碌碌之中，往往不知道自己真正想要的是什么，或者说，自己从来没有花时间仔细思考过这个问题。也许是这个问题太难，亦或者是自己潜意识中不愿意去面对，我发现了解自我其实真的是很难的一件事情。一旦知道自己想要什么，就可以将自己的拥有的资源集中到特定的事情上面，全力去实现自己的真正愿望。 书中介绍了三种方法来帮助自己明确自己的目标：梦想相册、想象成功和梦想储蓄罐。 梦想相册就是将与自己愿望相关的图片保存在自己的梦想相册中，例如，如果你想拥有一栋别墅，你就可以找到与梦想中的别墅相像的照片，并将其放入自己的梦想相册。这样，有助于将自己的梦想具象化，让自己时时可以“看见”自己的愿望。 梦想成功就是要求自己要想像实现梦想以后的景象，细节越多越好。例如，你可以想象自己别墅坐落的位置，内部装修风格，自己住在里面的感受等等。 梦想储蓄罐就是为自己的每一个梦想准备一个储蓄罐，并定期将钱存入其中。例如，你可以建立一个专门的银行账户，定期将钱存入其中，这笔钱将用于未来购买梦想中的别墅。 树立自信和成功日记另外，书中讲到成功的关键是自信。 并且，通过坚持写成功日记，可以帮助自己建立自信心。我想，不仅理财需要自信，无论做任何事情，自信都是成功的基石。但是，当我们遇到困难和阻力的时候，通常就会对自己的能力失去信心，并转而向外力求助。久而久之，每当面临困境的时候，我们潜意识当中就会逃避或者退缩。但是，如果能坚持把生活中每一个成功的经历，无论大小，都记录到成功日记当中。并定期的回顾这些经历，这将有助于培养我们的自信心。 读完全书，我觉得以上两个观念给我留下了深刻的印象。虽然书中也介绍了一些具体的理财方法，但是，我认为，思想决定行为，正确的思想观念才能有效的指导我们的行为。因此，相对于具体的方法来说，我更喜欢吸收正确的新观念。]]></content>
+      <categories>
+        <category>阅读</category>
+      </categories>
+      <tags>
+        <tag>阅读笔记</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[Shortcuts让收快递变得简单一点]]></title>
+    <url>%2F2018%2F11%2F20%2FShortcuts%E8%AE%A9%E6%94%B6%E5%BF%AB%E9%80%92%E5%8F%98%E5%BE%97%E7%AE%80%E5%8D%95%E4%B8%80%E7%82%B9%2F</url>
+    <content type="text"><![CDATA[前言自从小区安装了快递柜以后，快递员就会直接把包裹寄存到快递柜中，并将取件码通过短信发送给收件人。这种方式不仅提高了快递员送快递的效率，同时也为收件人创造了时间的弹性，并解决了家中无人接收快递的问题。 通常情况下，快递都是在白天送达，但是，对我来说，虽然收到了取快递的短信，却要等到下班后才能回家拿快递。因此，往往累了一天到家后，就会忘了取快递的事情。 其实，解决这个问题很简单，当收到快递送达的短信以后，复制短信内容，在手机上创建一条提醒事项，并将内容粘贴到该提醒事项，并设置好提醒的时间（如下班后到家的时间），或者设置基于位置的提醒。通常来说，这些操作并不复杂，但是，如果同时收到几个快递，复制粘贴的操作还是挺费事的。因此，我想到了利用Shortcuts来实现自动化创建提醒事项。 基本思路目标 简化创建提醒事项的流程 当我到达小区时，手机自动提醒我取快递。 应用 捷径 提醒事项 操作流程 复制短信 - 点击通知中心的捷径“收快递” - 自动创建一条基于位置的提醒事项 具体实现由于小区有多个快递柜，因此，可以以快递柜的名称为条件，判断短信中是否包含相应的快递柜名称，并根据该条件，创建相应的提醒事项。 创建完Shortcuts后，可以在通知中心直接运行。]]></content>
+      <categories>
+        <category>手机</category>
+      </categories>
+      <tags>
+        <tag>iOS</tag>
+        <tag>Shortcuts</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[常用公共DNS]]></title>
+    <url>%2F2018%2F11%2F15%2F%E5%B8%B8%E7%94%A8%E5%85%AC%E5%85%B1DNS%2F</url>
+    <content type="text"><![CDATA[CloudFlare DNS 1.1.1.11.0.0.12606:4700:4700::11112606:4700:4700::1001 百度公共DNS 180.76.76.762400:da00::6666 中国互联网络中心 1.2.4.8210.2.4.8101.226.4.6123.125.81.6 阿里DNS 223.5.5.5223.6.6.6 Google DNS 8.8.8.88.8.4.4OpenDNS 208.67.222.222208.67.220.220208.67.222.220208.67.220.222 OneDNS 117.50.11.11117.50.22.22 DNSPod DNS+ 119.29.29.29119.28.28.28182.254.118.118182.254.116.116]]></content>
+      <categories>
+        <category>互联网</category>
+      </categories>
+      <tags>
+        <tag>DNS</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[URL Scheme收藏]]></title>
+    <url>%2F2018%2F11%2F14%2FURL-Scheme%E6%94%B6%E8%97%8F%2F</url>
+    <content type="text"><![CDATA[微信扫一扫： weixin://scanqrcode 支付宝扫一扫： alipayqr://platformapi/startapp?saId=10000007 付款： alipay://platformapi/startapp?appId=20000056 记账： alipay://platformapi/startapp?appId=20000168 滴滴： alipay://platformapi/startapp?appId=20000778 转账： alipayqr://platformapi/startapp?saId=20000116 手机充值： alipayqr://platformapi/startapp?saId=10000003 信用卡还款： alipays://platformapi/startapp?appId=09999999 生活缴费： alipayqr://platformapi/startapp?saId=2000193 查快递：alipays://platformapi/startapp?appId=20000754]]></content>
+      <categories>
+        <category>手机</category>
+      </categories>
+      <tags>
+        <tag>iOS</tag>
+        <tag>Shortcuts</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[什么是Intune]]></title>
+    <url>%2F2018%2F11%2F13%2F%E4%BB%80%E4%B9%88%E6%98%AFIntune%2F</url>
+    <content type="text"><![CDATA[概述Intune是一个企业移动化管理(EMM)的解决方案。与同类产品不同的是，Intune首先是一项云服务，因此，企业不需要在内网部署服务器和后台软件。此外，企业需要在线订阅该项服务，并按照每用户每月的单价来付费。 Intune主要通过以下几个方面对企业进行移动化管理： 管理企业的移动终端设备，例如iPhone, iPad, Android, Surface等。 管理企业的移动应用，例如Office 365, Salesforce等。 保护企业的数据。 保证设备和应用的合规性。 此外，Intune通过与Azure Active Directory集成实现了身份验证和访问控制功能，与Azure Information Protection实现了数据保护功能。 设备管理设备管理通常包含以下内容： 注册设备，并对所有设备进行资产管理 推送设备的配置 推送配置文件，例如邮箱、VPN和Wi-Fi 报告并检查设备的合规性 删除企业数据 应用管理应用管理通常包含以下内容： 推送应用 配置应用 删除应用数据 更新应用 应用资产管理 数据安全Intune通过App Protection Policy来保护应用数据的安全。主要有以下几个方面： 保证个人数据和企业数据隔离 限制用户的操作，例如复制、剪切/粘贴、保存和查看 删除应用数据]]></content>
+      <categories>
+        <category>企业产品</category>
+      </categories>
+      <tags>
+        <tag>Intune</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[个人博客 — Hexo标签和分类篇]]></title>
+    <url>%2F2018%2F11%2F09%2F%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2-%E2%80%94-Hexo%E6%A0%87%E7%AD%BE%E5%92%8C%E5%88%86%E7%B1%BB%E7%AF%87%2F</url>
+    <content type="text"><![CDATA[标签新建标签页面 在站点目录下，打开Git Bash命令窗口 输入以下命令，新建标签页面，该命令将在.\source\tags目录下创建文件index.md hexo new page tags 设置页面类型 访问目录.\source\tags，并用记事本打开文件index.md 添加 type: “tags”, 将页面类型设置为tags --- title: 标签 date: 2018-11-08 12:02:31 type: &quot;tags&quot; --- 修改菜单 打开Next配置文件_config.yml 查找”Menu settings”，删除tags设置所在的#号 menu: home: / tags: /tags 启用Tags以后，首页会显示“标签”的选项 为新建的博文添加标签 以下示例为博文添加了两个标签: Blog 和 Hexo --- title: 个人博客 —— Hexo标签和分类篇 date: 2018-11-09 13:16:18 tags: - Blog - Hexo 分类新建分类页面 在站点目录下，打开Git Bash命令窗口 输入以下命令，新建标签页面，该命令将在.\source\categories目录下创建文件index.md hexo new page categories 设置页面类型 访问目录.\source\categories，并用记事本打开文件index.md 添加 type: “categories”, 将页面类型设置为categories --- title: 分类 date: 2018-11-08 12:02:31 type: &quot;categories&quot; --- 修改菜单 打开Next配置文件_config.yml 查找”Menu settings”，删除categories设置所在的#号 menu: home: / categories: /categories 启用categories以后，首页会显示“分类”的选项 为新建的博文添加标签 以下示例为博文添加了一个分类: 互联网 --- title: 个人博客 —— Hexo标签和分类篇 date: 2018-11-09 13:16:18 tags: - 互联网]]></content>
+      <categories>
+        <category>互联网</category>
+      </categories>
+      <tags>
+        <tag>Blog</tag>
+        <tag>Hexo</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[个人博客 — GitHub Pages篇]]></title>
+    <url>%2F2018%2F11%2F08%2F%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2-%E2%80%94-GitHub-Pages%E7%AF%87%2F</url>
+    <content type="text"><![CDATA[什么是GitHub Pages？GitHub Pages是一项免费的静态网站托管服务（不支持PHP, Ruby, or Python.），可用于托管个人、组织或者项目的网页。 创建和发布网站的两种方式： 利用Jekyll Theme Chooser在线创建网站 在本地计算机创建网站，然后利用GitHub Desktop 或者 the command line将网站发布至GitHub Pages. GitHub Pages网站的两种类型： 项目网站 —— 该网站与项目关联， 并且网站文件存储于项目仓库的分支中 个人和组织网站 —— 该网站与项目无关，并且网站文件存储于专用的仓库中 如何将博客发布到GitHub Pages 访问GitHub网站，注册一个新账号 登陆GitHub网站，并创建新Repository。如果用户名是john，创建的Repository name必须为john.github.io 修改Hexo的配置文件 deploy: type: git repo: https://github.com/john/john.github.io.git branch: master 打开GitHub Bash, 设置GitHub的账户信息 git config --global user.name &quot;GitHub用户名&quot; git config --global user.email &quot;GitHub注册邮箱&quot; 安装Git部署插件 npm install hexo-deployer-git --save 运行以下三条命令，将网页内容发布到GitHub Pages hexo clean // 清除缓存，并删除Public目录 hexo g // 创建Public目录，并在Public目录下生成静态的网页文件 hexo d // 将网页文件同步到GitHub，同步前需要输入GitHub用户名和密码通过身份认证 登陆GitHub，在Repository的Settings页面中，可以看到博客的访问URL: https://john.github.io。]]></content>
+      <categories>
+        <category>互联网</category>
+      </categories>
+      <tags>
+        <tag>Blog</tag>
+        <tag>GitHub</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[个人博客 — Hexo安装篇]]></title>
+    <url>%2F2018%2F11%2F07%2F%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2-%E2%80%94-Hexo%E5%AE%89%E8%A3%85%E7%AF%87%2F</url>
+    <content type="text"><![CDATA[什么是Hexo?Hexo是一个快速、 简单和强大的博客框架。你可以用Markdown或者其它语言撰写博客内容，Hexo会自动生成静态文件。 如何在Windows上安装Hexo? 下载并安装Node.js。 下载并安装Git。 安装Hexo。在桌面上点击右键，选择“Git Bash Here” 。在命令行窗口中，输入以下命令（告警信息可以忽略）： npm install -g hexo-cli 验证Hexo安装成功。在Git Bash窗口中，输入以下命令，可以看到Hexo的版本信息。 初始化设置Hexo hexo init &lt;folder&gt; cd &lt;folder&gt; npm install 设置语言用记事本打开_config.yml， 设置language参数。 language: zh-CN 修改主题 git clone https://github.com/theme-next/hexo-theme-next themes/next 用记事本打开_config.yml， 设置theme参数。 theme: next 访问博客在Gib Bash窗口中，运行命令 hexo server 打开浏览器，输入URL: http://localhost:4000]]></content>
+      <categories>
+        <category>互联网</category>
+      </categories>
+      <tags>
+        <tag>Blog</tag>
+        <tag>Hexo</tag>
+      </tags>
+  </entry>
+</search>

@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+  <link rel="stylesheet" href="/lib/needsharebutton/needsharebutton.css">
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.5.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.5.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.5.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.5.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.5.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.5.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="什么是SSH Protocol?SSH Protocol（或者称为Secure Shell）是一种安全的远程登录计算机的方式。相对于传统的远程登录协议，例如Telnet, rlogin等，SSH采用了对远程连接进行加密的方式，来保证身份认证和数据传输的机密性。 什么是SSH Tunnel?SSH tunneling，又称为SSH port forwarding，可以将客户端程序发送的数据通过加密的">
+<meta name="keywords" content="RaspberryPi">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SSH Tunnel简介">
+<meta property="og:url" content="http://yoursite.com/2020/05/27/SSH-Tunnel简介/index.html">
+<meta property="og:site_name" content="Andy&#39;s Blog">
+<meta property="og:description" content="什么是SSH Protocol?SSH Protocol（或者称为Secure Shell）是一种安全的远程登录计算机的方式。相对于传统的远程登录协议，例如Telnet, rlogin等，SSH采用了对远程连接进行加密的方式，来保证身份认证和数据传输的机密性。 什么是SSH Tunnel?SSH tunneling，又称为SSH port forwarding，可以将客户端程序发送的数据通过加密的">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://yoursite.com/images/420.png">
+<meta property="og:updated_time" content="2020-11-01T10:59:40.292Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SSH Tunnel简介">
+<meta name="twitter:description" content="什么是SSH Protocol?SSH Protocol（或者称为Secure Shell）是一种安全的远程登录计算机的方式。相对于传统的远程登录协议，例如Telnet, rlogin等，SSH采用了对远程连接进行加密的方式，来保证身份认证和数据传输的机密性。 什么是SSH Tunnel?SSH tunneling，又称为SSH port forwarding，可以将客户端程序发送的数据通过加密的">
+<meta name="twitter:image" content="http://yoursite.com/images/420.png">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/05/27/SSH-Tunnel简介/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>SSH Tunnel简介 | Andy's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Andy's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+  </li>
+
+      
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+        </li>
+      
+    </ul>
+  
+
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off" placeholder="搜索..." spellcheck="false" type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+
+    </div>
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/05/27/SSH-Tunnel简介/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Andy">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Andy's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">SSH Tunnel简介
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2020-05-27 12:06:16" itemprop="dateCreated datePublished" datetime="2020-05-27T12:06:16+08:00">2020-05-27</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2020-11-01 18:59:40" itemprop="dateModified" datetime="2020-11-01T18:59:40+08:00">2020-11-01</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/智能家居/" itemprop="url" rel="index"><span itemprop="name">智能家居</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="什么是SSH-Protocol"><a href="#什么是SSH-Protocol" class="headerlink" title="什么是SSH Protocol?"></a>什么是SSH Protocol?</h1><p><strong>SSH Protocol</strong>（或者称为<strong>Secure Shell</strong>）是一种安全的远程登录计算机的方式。相对于传统的远程登录协议，例如Telnet, rlogin等，SSH采用了对远程连接进行加密的方式，来保证身份认证和数据传输的机密性。</p>
+<h1 id="什么是SSH-Tunnel"><a href="#什么是SSH-Tunnel" class="headerlink" title="什么是SSH Tunnel?"></a>什么是SSH Tunnel?</h1><p><strong>SSH tunneling</strong>，又称为<strong>SSH port forwarding</strong>，可以将客户端程序发送的数据通过加密的SSH Tunnel，传送给远端的服务器应用。这种方式比较适用于一些传统的应用， 由于这些应用不支持加密传输，并且进行二次开发的成本较高，因此可以采用SSH Tunneling技术，对这些应用传输的数据进行加密。</p>
+<p>SSH Tunnel是由SSH客户端和SSH服务器之间，通过SSH Protocol建立的一条安全通道。应用的客户端程序和服务器程序之间通讯的数据，都会通过SSH Tunnel进行传输。                                           </p>
+<p>App Client <-> SSH Client <------------ssh tunnel------------> SSH Server <-> App Server</-></------------ssh></-></p>
+<p> <img src="/images/420.png" alt></p>
+<h1 id="SSH-Tunnel的应用场景"><a href="#SSH-Tunnel的应用场景" class="headerlink" title="SSH Tunnel的应用场景"></a>SSH Tunnel的应用场景</h1><ul>
+<li>对于一些传统的应用，由于这些应用不支持加密传输，并且进行二次开发的成本较高，因此可以采用SSH     Tunneling技术，对这些应用传输的数据进行加密。</li>
+<li>由于防火墙的限制，许多服务器只能在内网访问，无法通过Internet远程访问。通过SSH Tunnel，可以远程访问内网的应用和服务器。</li>
+<li>通过SSH Tunnel，可以将SSH Client设置为SOCKS代理服务器，所有上网的流量，都将通过SSH Tunnel发送到远端的SSH服务器，并由SSH服务器转发到Internet。</li>
+</ul>
+<h1 id="SSH-Tunnel的使用方式"><a href="#SSH-Tunnel的使用方式" class="headerlink" title="SSH Tunnel的使用方式"></a>SSH Tunnel的使用方式</h1><h2 id="Local-Port-Forwarding"><a href="#Local-Port-Forwarding" class="headerlink" title="Local Port Forwarding"></a>Local Port Forwarding</h2><p>Local Port Forwarding需要<strong>SSH Client</strong>在本地的IP地址（127.0.0.1或者0.0.0.0）监听一个TCP端口，客户端程序只需要连接到SSH Client的IP地址和监听的端口，客户端程序(App Client)发送的数据都将通过SSH Client和SSH Server之间建立的SSH Tunnel传输，最后，由SSH Server将数据发送给服务端程序(App Server)。</p>
+<p>逻辑上来讲，相当于将服务端程序的服务端口映射到SSH Client监听的端口。最终目的是将服务端程序的服务端口映射到App Client可以访问的节点。</p>
+<p>这种方式适用于服务器端(App Server)的SSH Server允许被防火墙发布到Internet，这样SSH Client可以远程连接到SSH Server。</p>
+<p>App Client <-> <strong>SSH Client(Listen on a TCP port)</strong> ——SSH Tunnel——&gt; SSH Server <-> App Server</-></-></p>
+<p>配置方式：</p>
+<p>在SSH Client上执行以下命令，该命令执行后，会在SSH Client上监听TCP端口8000：</p>
+<p><code>ssh -L 127.0.0.1:8000:www.intranet.domain:80 root@sshserver.intranet.domain</code></p>
+<p>-L                                                        表示使用Local Port Forwarding</p>
+<p>127.0.0.1                                           在SSH Client所在计算机的本地127.0.0.1监听TCP服务端口</p>
+<p>8000:                                                   SSH Client监听TCP服务端口8000</p>
+<p><a href="http://www.intranet.domain" target="_blank" rel="noopener">www.intranet.domain</a>                      远端内网服务器的主机域名</p>
+<p>80                                                         远端内网服务器的服务端口80</p>
+<p><a href="mailto:root@sshserver.intranet.domain" target="_blank" rel="noopener">root@sshserver.intranet.domain</a>   远端SSH服务器的登录账号(root)和地址(sshserver.intranet.domain)</p>
+<p>注意：由于SSH Client只是在localhost(127.0.0.1)监听服务端口8000，所以App Client必须和SSH Client在同一台计算机上，才能访问远程应用<a href="http://www.intranet.domain。" target="_blank" rel="noopener">www.intranet.domain。</a></p>
+<p>如果App Client运行在另外一台计算机上，则需要使用以下命令，让SSH Client在IP地址0.0.0.0上监听服务端口8000，这样，SSH Client就可以接收来自于任何计算机的客户端程序访问。</p>
+<p><code>ssh -L 0.0.0.0:8000:www.intranet.domain:80 root@sshserver.intranet.domain</code></p>
+<h2 id="Remote-Port-Forwarding"><a href="#Remote-Port-Forwarding" class="headerlink" title="Remote Port Forwarding"></a>Remote Port Forwarding</h2><p>在有些场景中，服务器端(App Server)的SSH Server无法被发布到Internet，这时候就只能使用Remote Port Forwadingd的方式，将服务端应用程序的服务端口，映射到客户端应用程式(App Client)这一侧的SSH Server。</p>
+<p>逻辑上来讲，相当于将服务端程序的服务端口映射到SSH Server监听的端口。最终目的是将服务端程序的服务端口映射到App Client可以访问的节点。</p>
+<p>App Client <-> <strong>SSH Server(Listen on a TCP port)</strong> &lt;——SSH Tunnel——- SSH Client <-> App Server</-></-></p>
+<p>配置方式：</p>
+<p>在SSH Client上执行以下命令，该命令执行后，会在SSH Server上监听TCP端口8000，绑定的IP地址是127.0.0.1：</p>
+<p><code>ssh -R :8000:www.intranet.domain:80 root@sshserver.intranet.domain</code></p>
+<p>-R         表示使用Remote Port Forwarding</p>
+<p>8000:      SSH Servert监听TCP服务端口8000</p>
+<p><a href="http://www.intranet.domain" target="_blank" rel="noopener">www.intranet.domain</a>  远端内网服务器的主机域名</p>
+<p>80         远端内网服务器的服务端口80</p>
+<p><a href="mailto:root@sshserver.intranet.domain" target="_blank" rel="noopener">root@sshserver.intranet.domain</a>  远端SSH服务器的登录账号(root)和地址(sshserver.intranet.domain)</p>
+<p>注意：默认情况下，SSH Server只会绑定IP地址127.0.0.1，如果需要绑定IP地址0.0.0.0，需要修改sshd_config配置文件中的参数<strong>GatewayPorts</strong>。</p>
+<p>以下是关于参数<strong>GatewayPorts</strong>的三种方式：</p>
+<p><code>GatewayPorts no</code></p>
+<p>该设置只允许SSH Server自己连接监听的服务端口8000，拒绝来自于外部计算机的连接请求。</p>
+<p><code>GatewayPorts yes</code></p>
+<p>该设置允许任何计算机的连接请求，如果SSH Server在Internet上，任何计算机都可以访问该服务端口8000。</p>
+<p>通过执行以下命令，可以在SSH Server上绑定IP地址0.0.0.0，允许任何计算机访问服务端口8000。</p>
+<p><code>ssh -R 0.0.0.0:8000:www.intranet.domain:80 root@sshserver.intranet.domain</code></p>
+<p><code>GatewayPorts clientspecified</code></p>
+<p>该设置只允许来自于指定IP地址的连接请求。格式如下：</p>
+<p>通过执行以下命令，可以限制只允许来自于IP地址2.2.2.2的计算机访问服务端口8000。</p>
+<p><code>ssh -R 2.2.2.2:8000:www.intranet.domain:80 root@sshserver.intranet.domain</code></p>
+<h2 id="Dynamic-Port-Forwarding"><a href="#Dynamic-Port-Forwarding" class="headerlink" title="Dynamic Port Forwarding"></a>Dynamic Port Forwarding</h2><p>Dynamic Port Forwarding可以将SSH Client配置为SOCKS代理服务器，所有的浏览通过SSH Tunnel发送到SSH Server，并由SSH Server转发至内网应用，或者Internet。</p>
+<p><code>ssh -C -D 1080 root@sshserver.intranet.domain  //绑定IP地址127.0.0.1</code></p>
+<p><code>ssh -C -D 0.0.0.0:1080 root@sshserver.intranet.domain  //绑定IP地址0.0.0.0</code></p>
+<p>-C 启用数据压缩</p>
+<p>-D 使用Dynamic Port Forwarding</p>
+<p>App Client -&gt; <strong>SSH Client(Listen on a TCP port)</strong> ———SSH Tunnel———&gt; SSH Server -&gt; Internet/Corporate App</p>
+<h2 id="启用和关闭Port-Forwarding"><a href="#启用和关闭Port-Forwarding" class="headerlink" title="启用和关闭Port Forwarding"></a>启用和关闭Port Forwarding</h2><p>通过配置SSH Server的配置文件sshd_config中的参数AllowTcpForwarding，可以启用和关闭Port Forwarding。</p>
+<p><strong>AllowTcpForwarding</strong></p>
+<p>Specifies whether TCP forwarding is permitted. </p>
+<p>The available options are:</p>
+<p><strong>yes</strong> (the default) or all to allow TCP forwarding, </p>
+<p><strong>no</strong> to prevent all TCP forwarding, </p>
+<p><strong>local</strong> to allow local (from the perspective of ssh(1)) forwarding only </p>
+<p><strong>remote</strong> to allow remote forwarding only. </p>
+<p>Note that disabling TCP forwarding does not improve security unless users are also denied shell access, as they can always install their own forwarders.</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/RaspberryPi/" rel="tag"># RaspberryPi</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div class="social_share">
+            
+            
+               <div id="needsharebutton-postbottom">
+                 <span class="btn">
+                    <i class="fa fa-share-alt" aria-hidden="true"></i>
+                 </span>
+               </div>
+            
+          </div>
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/02/16/BT下载完成后发送通知/" rel="next" title="BT下载完成后发送通知">
+                <i class="fa fa-chevron-left"></i> BT下载完成后发送通知
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/07/05/如何防止SSH连接中断/" rel="prev" title="如何防止SSH连接中断">
+                如何防止SSH连接中断 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Andy</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">71</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">9</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">19</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是SSH-Protocol"><span class="nav-number">1.</span> <span class="nav-text">什么是SSH Protocol?</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是SSH-Tunnel"><span class="nav-number">2.</span> <span class="nav-text">什么是SSH Tunnel?</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SSH-Tunnel的应用场景"><span class="nav-number">3.</span> <span class="nav-text">SSH Tunnel的应用场景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SSH-Tunnel的使用方式"><span class="nav-number">4.</span> <span class="nav-text">SSH Tunnel的使用方式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Local-Port-Forwarding"><span class="nav-number">4.1.</span> <span class="nav-text">Local Port Forwarding</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Remote-Port-Forwarding"><span class="nav-number">4.2.</span> <span class="nav-text">Remote Port Forwarding</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Dynamic-Port-Forwarding"><span class="nav-number">4.3.</span> <span class="nav-text">Dynamic Port Forwarding</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启用和关闭Port-Forwarding"><span class="nav-number">4.4.</span> <span class="nav-text">启用和关闭Port Forwarding</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright"> &copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Andy</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动 v3.9.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Pisces</a> v6.5.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+      <div id="needsharebutton-float">
+        <span class="btn">
+          <i class="fa fa-share-alt" aria-hidden="true"></i>
+        </span>
+      </div>
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.5.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.5.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.5.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.5.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.5.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+  
+  <script src="/lib/needsharebutton/needsharebutton.js"></script>
+
+  <script>
+    
+      pbOptions = {};
+      
+          pbOptions.iconStyle = "box";
+      
+          pbOptions.boxForm = "horizontal";
+      
+          pbOptions.position = "bottomCenter";
+      
+          pbOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
+      
+      new needShareButton('#needsharebutton-postbottom', pbOptions);
+    
+    
+      flOptions = {};
+      
+          flOptions.iconStyle = "box";
+      
+          flOptions.boxForm = "horizontal";
+      
+          flOptions.position = "middleRight";
+      
+          flOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
+      
+      new needShareButton('#needsharebutton-float', flOptions);
+    
+  </script>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
