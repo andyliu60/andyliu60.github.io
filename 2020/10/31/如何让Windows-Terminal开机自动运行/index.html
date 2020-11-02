@@ -120,14 +120,17 @@
 <meta property="og:site_name" content="Andy&#39;s Blog">
 <meta property="og:description" content="由于经常需要使用命令行工具，所以十分依赖于Windows Terminal。但是，每次进入Windows系统，都要手动点击运行Windows Terminal，觉得还是有点麻烦。并且，如果要用管理员来运行，还要右键点击后，选择以管理员身份运行。 虽然在设置中，可以配置Windows Terminal随机启动，但是却无法指定用管理员身份运行。所以，想到通过创建快捷方式，并且放到启动目录的方式来解决问">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://yoursite.com/images/424.png">
+<meta property="og:image" content="http://yoursite.com/images/425.png">
+<meta property="og:image" content="http://yoursite.com/images/426.png">
 <meta property="og:image" content="http://yoursite.com/images/421.png">
 <meta property="og:image" content="http://yoursite.com/images/422.png">
 <meta property="og:image" content="http://yoursite.com/images/423.png">
-<meta property="og:updated_time" content="2020-11-01T10:59:40.292Z">
+<meta property="og:updated_time" content="2020-11-02T00:46:51.132Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="如何让Windows Terminal开机自动运行">
 <meta name="twitter:description" content="由于经常需要使用命令行工具，所以十分依赖于Windows Terminal。但是，每次进入Windows系统，都要手动点击运行Windows Terminal，觉得还是有点麻烦。并且，如果要用管理员来运行，还要右键点击后，选择以管理员身份运行。 虽然在设置中，可以配置Windows Terminal随机启动，但是却无法指定用管理员身份运行。所以，想到通过创建快捷方式，并且放到启动目录的方式来解决问">
-<meta name="twitter:image" content="http://yoursite.com/images/421.png">
+<meta name="twitter:image" content="http://yoursite.com/images/424.png">
 
 
 
@@ -395,7 +398,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2020-11-01 18:59:40" itemprop="dateModified" datetime="2020-11-01T18:59:40+08:00">2020-11-01</time>
+                <time title="修改时间：2020-11-02 08:46:51" itemprop="dateModified" datetime="2020-11-02T08:46:51+08:00">2020-11-02</time>
               
             
           </span>
@@ -430,7 +433,27 @@
       
         <p>由于经常需要使用命令行工具，所以十分依赖于<strong>Windows Terminal</strong>。但是，每次进入Windows系统，都要手动点击运行<strong>Windows Terminal</strong>，觉得还是有点麻烦。并且，如果要用管理员来运行，还要右键点击后，选择以管理员身份运行。</p>
 <p>虽然在设置中，可以配置Windows Terminal随机启动，但是却无法指定用管理员身份运行。所以，想到通过创建快捷方式，并且放到启动目录的方式来解决问题。</p>
-<h1 id="创建快捷方式"><a href="#创建快捷方式" class="headerlink" title="创建快捷方式"></a>创建快捷方式</h1><ol>
+<h1 id="方法一"><a href="#方法一" class="headerlink" title="方法一"></a>方法一</h1><h2 id="创建计划任务"><a href="#创建计划任务" class="headerlink" title="创建计划任务"></a>创建计划任务</h2><ol>
+<li>打开计划任务程序。</li>
+<li>创建新的任务。</li>
+<li><p>在<strong>常规</strong>中，选择<strong>使用最高权限运行</strong>。<br><img src="/images/424.png" alt></p>
+</li>
+<li><p>在<strong>触发器</strong>中，<strong>开始任务</strong>选择<strong>登录时</strong>。<br><img src="/images/425.png" alt></p>
+</li>
+<li><p>在<strong>操作</strong>中，配置参数如下：</p>
+<p> <strong>程序或脚本</strong>：”C:\Program Files\WindowsApps\Microsoft.WindowsTerminal_1.3.2651.0_x64__8wekyb3d8bbwe\wt.exe”</p>
+<p> <strong>参数</strong>：-M //设置该参数可以将Windows Terminal打开后窗口最大化</p>
+<p> <strong>起始于</strong>：”C:\Program Files\WindowsApps\Microsoft.WindowsTerminal_1.3.2651.0_x64__8wekyb3d8bbwe”</p>
+</li>
+</ol>
+<p><img src="/images/426.png" alt></p>
+<p>====================================================================</p>
+<p><strong>注意</strong></p>
+<p>通过测试，<strong>方法二无法成功让Windows Termianl自动运行</strong>。</p>
+<p>如果在快捷方式的文件属性中配置了以管理员身份运行，在用户登录的后，该快捷方式并没有自动运行。但是，如果取消配置以管理员身份运行，在用户登录的后，该快捷方式可以自动运行，并打开Windows Terminal应用。</p>
+<p>如果手动点击该快捷方式，可以以管理员身份运行Windows Terminal。</p>
+<p>====================================================================</p>
+<h1 id="方法二"><a href="#方法二" class="headerlink" title="方法二"></a>方法二</h1><h2 id="创建快捷方式"><a href="#创建快捷方式" class="headerlink" title="创建快捷方式"></a>创建快捷方式</h2><ol>
 <li><p>打开文件资源管理器，访问目录C:\Program Files\WindowsApps\Microsoft.WindowsTerminal_1.3.2651.0_x64__8wekyb3d8bbwe。</p>
 </li>
 <li><p>右键点击<strong>wt.exe</strong>，选择<strong>发送到</strong>-<strong>桌面快捷方式</strong>。</p>
@@ -443,7 +466,7 @@
 <li>选择<strong>用管理员身份运行</strong>。</li>
 </ol>
 <p><img src="/images/422.png" alt></p>
-<h1 id="复制快捷方式到启动目录"><a href="#复制快捷方式到启动目录" class="headerlink" title="复制快捷方式到启动目录"></a>复制快捷方式到启动目录</h1><ol>
+<h2 id="复制快捷方式到启动目录"><a href="#复制快捷方式到启动目录" class="headerlink" title="复制快捷方式到启动目录"></a>复制快捷方式到启动目录</h2><ol>
 <li><p>在键盘上同时按下<strong>Win + R</strong>，打开运行窗口。</p>
 </li>
 <li><p>输入<strong>shell:startup</strong>后，按回车后，进入启动目录。</p>
@@ -703,7 +726,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#创建快捷方式"><span class="nav-number">1.</span> <span class="nav-text">创建快捷方式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#复制快捷方式到启动目录"><span class="nav-number">2.</span> <span class="nav-text">复制快捷方式到启动目录</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#方法一"><span class="nav-number">1.</span> <span class="nav-text">方法一</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建计划任务"><span class="nav-number">1.1.</span> <span class="nav-text">创建计划任务</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#方法二"><span class="nav-number">2.</span> <span class="nav-text">方法二</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#创建快捷方式"><span class="nav-number">2.1.</span> <span class="nav-text">创建快捷方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#复制快捷方式到启动目录"><span class="nav-number">2.2.</span> <span class="nav-text">复制快捷方式到启动目录</span></a></li></ol></li></ol></div>
             
 
           </div>
