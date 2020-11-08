@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[树莓派没有显示器如何配置启动SSH和VNC服务]]></title>
+    <url>%2F2020%2F11%2F08%2F%E6%A0%91%E8%8E%93%E6%B4%BE%E6%B2%A1%E6%9C%89%E6%98%BE%E7%A4%BA%E5%99%A8%E5%A6%82%E4%BD%95%E9%85%8D%E7%BD%AE%E5%90%AF%E5%8A%A8SSH%E5%92%8CVNC%E6%9C%8D%E5%8A%A1%2F</url>
+    <content type="text"><![CDATA[最近刚入手一台树莓派4B，但是，由于树莓派从4代开始，改用Micro HDMI作为显示器的输出口，家中没有Micro HDMI - Standard HDMI的连接线，所以，无法连接显示器，完成初始配置。 于是，想通过SSH和VNC来远程访问树莓派，但是，这两个服务默认都没有自动开启。 通过在网上搜索别人的经验，发现只需要在SD卡的Boot分区中创建空白的ssh文件，就可以让树莓派开机自动启动SSH服务。 开启SSH服务 将烧录好Raspbian系统的SD卡插入电脑。 在boot分区中，用记事本创建一个新文件，文件名为ssh，注意需要将后缀.txt删除。 把SD卡插入树莓派，通电启动后，SSH服务会自动开启。 开启VNC服务 通过SSH，远程访问树莓派。 输入sudo raspi-config, 打开树莓派配置工具。 选择Interface Options。 选择P3 VNC。 选择Yes，开启VNC服务。]]></content>
+      <tags>
+        <tag>RaspberryPi</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[如何让Windows Terminal开机自动运行]]></title>
     <url>%2F2020%2F10%2F31%2F%E5%A6%82%E4%BD%95%E8%AE%A9Windows-Terminal%E5%BC%80%E6%9C%BA%E8%87%AA%E5%8A%A8%E8%BF%90%E8%A1%8C%2F</url>
     <content type="text"><![CDATA[由于经常需要使用命令行工具，所以十分依赖于Windows Terminal。但是，每次进入Windows系统，都要手动点击运行Windows Terminal，觉得还是有点麻烦。并且，如果要用管理员来运行，还要右键点击后，选择以管理员身份运行。 虽然在设置中，可以配置Windows Terminal随机启动，但是却无法指定用管理员身份运行。所以，想到通过创建快捷方式，并且放到启动目录的方式来解决问题。 方法一创建计划任务 打开计划任务程序。 创建新的任务。 在常规中，选择使用最高权限运行。 在触发器中，开始任务选择登录时。 在操作中，配置参数如下： 程序或脚本：”C:\Program Files\WindowsApps\Microsoft.WindowsTerminal_1.3.2651.0_x64__8wekyb3d8bbwe\wt.exe” 参数：-M //设置该参数可以将Windows Terminal打开后窗口最大化 起始于：”C:\Program Files\WindowsApps\Microsoft.WindowsTerminal_1.3.2651.0_x64__8wekyb3d8bbwe” ==================================================================== 注意 通过测试，方法二无法成功让Windows Termianl自动运行。 如果在快捷方式的文件属性中配置了以管理员身份运行，在用户登录的后，该快捷方式并没有自动运行。但是，如果取消配置以管理员身份运行，在用户登录的后，该快捷方式可以自动运行，并打开Windows Terminal应用。 如果手动点击该快捷方式，可以以管理员身份运行Windows Terminal。 ==================================================================== 方法二创建快捷方式 打开文件资源管理器，访问目录C:\Program Files\WindowsApps\Microsoft.WindowsTerminal_1.3.2651.0_x64__8wekyb3d8bbwe。 右键点击wt.exe，选择发送到-桌面快捷方式。 右键点击桌面上的wt.exe-快捷方式，选择属性，然后选择高级。 选择用管理员身份运行。 复制快捷方式到启动目录 在键盘上同时按下Win + R，打开运行窗口。 输入shell:startup后，按回车后，进入启动目录。 将快捷方式wt.exe-快捷方式复制到启动目录下。 重启电脑后，登录Windows系统后，Window Terminal就会自动以管理员身份运行。]]></content>
@@ -42,17 +50,17 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[BT下载完成后发送通知]]></title>
-    <url>%2F2020%2F02%2F16%2FBT%E4%B8%8B%E8%BD%BD%E5%AE%8C%E6%88%90%E5%90%8E%E5%8F%91%E9%80%81%E9%80%9A%E7%9F%A5%2F</url>
-    <content type="text"><![CDATA[需求在树莓派上，每次通过Transmission下载文件时，都要通过浏览器查看文件是否已下载完成。最好能在文件下载完成后，通过手机自动发送下载完成通知。 解决方案Transmission支持当文件下载完成后，可以运行指定路径的脚本。结合IFTTT，可以将下载完成的文件名发送到手机端。 脚本创建脚本文件btfinish.sh：12touch /home/pi/Documents/btfinish.shchmod 775 /home/pi/Documents/btfinish.sh 脚本内容如下：123#!/bin/bash/home/pi/Documents/bt_ifttt.py &quot;$TR_TORRENT_NAME&quot; 创建Python脚本文件bt_ifttt.py，该脚本将会向IFTTT服务发送下载完成的消息。123456789101112131415161718192021222324252627282930313233#!/usr/bin/env python3# -*- coding: utf-8 -*-&apos;This is a module used to communicate with IFTTT platform.&apos;__author__ = &apos;Andy Liu&apos;import requestsimport subprocessimport sysclass Notification(object): mykey = &apos;&apos; def __init__(self, event, **values): self.__url = &quot;https://maker.ifttt.com/trigger/%s/with/key/%s&quot; % (event, self.mykey) self.__values = values def sent(self): requests.post(self.__url, data=self.__values) @property def url(self): return self.__url @property def values(self): return self.__valuesif __name__ == &apos;__main__&apos;: bt_file_name = sys.argv[1] # 从脚本外部获取参数 n = Notification(&apos;bt_download&apos;, value1 = bt_file_name) # IFTTT的事件名称和参数值1 n.sent() IFTTT 配置文件修改Tranmission-daemon配置文件settings.json。 1sudo vi /etc/transmission-daemon/settings.json 修改以下参数：12&quot;script-torrent-done-enabled&quot;: true, # 下载完成后，调用并运行脚本&quot;script-torrent-done-filename&quot;: &quot;/home/pi/Documents/btfinish.sh&quot;, # 指定脚本的位置 参考资料https://github.com/transmission/transmission/wiki/Scripts]]></content>
+    <title><![CDATA[BT种子放到目录下后自动下载]]></title>
+    <url>%2F2020%2F02%2F16%2FBT%E7%A7%8D%E5%AD%90%E6%94%BE%E5%88%B0%E7%9B%AE%E5%BD%95%E4%B8%8B%E5%90%8E%E8%87%AA%E5%8A%A8%E4%B8%8B%E8%BD%BD%2F</url>
+    <content type="text"><![CDATA[Transmission支持将种子文件放到指定目录下后，就会自动创建下载任务。 配置参数 12&quot;watch-dir&quot;: &quot;/home/pi/Downloads/torrents&quot;,&quot;watch-dir-enabled&quot;: true 配置参数watch-dir，指定存放种子文件的目录。为了避免权限不足，建议为目录设置775权限。1chmod 775 torrents 为了使配置生效，需要重新启动Transmission-daemon服务。1sudo service transmission-daemon restart]]></content>
       <tags>
         <tag>RaspberryPi</tag>
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[BT种子放到目录下后自动下载]]></title>
-    <url>%2F2020%2F02%2F16%2FBT%E7%A7%8D%E5%AD%90%E6%94%BE%E5%88%B0%E7%9B%AE%E5%BD%95%E4%B8%8B%E5%90%8E%E8%87%AA%E5%8A%A8%E4%B8%8B%E8%BD%BD%2F</url>
-    <content type="text"><![CDATA[Transmission支持将种子文件放到指定目录下后，就会自动创建下载任务。 配置参数 12&quot;watch-dir&quot;: &quot;/home/pi/Downloads/torrents&quot;,&quot;watch-dir-enabled&quot;: true 配置参数watch-dir，指定存放种子文件的目录。为了避免权限不足，建议为目录设置775权限。1chmod 775 torrents 为了使配置生效，需要重新启动Transmission-daemon服务。1sudo service transmission-daemon restart]]></content>
+    <title><![CDATA[BT下载完成后发送通知]]></title>
+    <url>%2F2020%2F02%2F16%2FBT%E4%B8%8B%E8%BD%BD%E5%AE%8C%E6%88%90%E5%90%8E%E5%8F%91%E9%80%81%E9%80%9A%E7%9F%A5%2F</url>
+    <content type="text"><![CDATA[需求在树莓派上，每次通过Transmission下载文件时，都要通过浏览器查看文件是否已下载完成。最好能在文件下载完成后，通过手机自动发送下载完成通知。 解决方案Transmission支持当文件下载完成后，可以运行指定路径的脚本。结合IFTTT，可以将下载完成的文件名发送到手机端。 脚本创建脚本文件btfinish.sh：12touch /home/pi/Documents/btfinish.shchmod 775 /home/pi/Documents/btfinish.sh 脚本内容如下：123#!/bin/bash/home/pi/Documents/bt_ifttt.py &quot;$TR_TORRENT_NAME&quot; 创建Python脚本文件bt_ifttt.py，该脚本将会向IFTTT服务发送下载完成的消息。123456789101112131415161718192021222324252627282930313233#!/usr/bin/env python3# -*- coding: utf-8 -*-&apos;This is a module used to communicate with IFTTT platform.&apos;__author__ = &apos;Andy Liu&apos;import requestsimport subprocessimport sysclass Notification(object): mykey = &apos;&apos; def __init__(self, event, **values): self.__url = &quot;https://maker.ifttt.com/trigger/%s/with/key/%s&quot; % (event, self.mykey) self.__values = values def sent(self): requests.post(self.__url, data=self.__values) @property def url(self): return self.__url @property def values(self): return self.__valuesif __name__ == &apos;__main__&apos;: bt_file_name = sys.argv[1] # 从脚本外部获取参数 n = Notification(&apos;bt_download&apos;, value1 = bt_file_name) # IFTTT的事件名称和参数值1 n.sent() IFTTT 配置文件修改Tranmission-daemon配置文件settings.json。 1sudo vi /etc/transmission-daemon/settings.json 修改以下参数：12&quot;script-torrent-done-enabled&quot;: true, # 下载完成后，调用并运行脚本&quot;script-torrent-done-filename&quot;: &quot;/home/pi/Documents/btfinish.sh&quot;, # 指定脚本的位置 参考资料https://github.com/transmission/transmission/wiki/Scripts]]></content>
       <tags>
         <tag>RaspberryPi</tag>
       </tags>
