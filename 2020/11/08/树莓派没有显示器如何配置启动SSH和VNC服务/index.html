@@ -124,7 +124,11 @@
 <meta property="og:image" content="http://yoursite.com/images/428.png">
 <meta property="og:image" content="http://yoursite.com/images/429.png">
 <meta property="og:image" content="http://yoursite.com/images/430.png">
-<meta property="og:updated_time" content="2020-11-08T01:16:05.759Z">
+<meta property="og:image" content="http://yoursite.com/images/431.png">
+<meta property="og:image" content="http://yoursite.com/images/432.png">
+<meta property="og:image" content="http://yoursite.com/images/433.png">
+<meta property="og:image" content="http://yoursite.com/images/434.png">
+<meta property="og:updated_time" content="2020-11-08T09:15:20.935Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="树莓派没有显示器如何配置启动SSH和VNC服务">
 <meta name="twitter:description" content="最近刚入手一台树莓派4B，但是，由于树莓派从4代开始，改用Micro HDMI作为显示器的输出口，家中没有Micro HDMI - Standard HDMI的连接线，所以，无法连接显示器，完成初始配置。 于是，想通过SSH和VNC来远程访问树莓派，但是，这两个服务默认都没有自动开启。 通过在网上搜索别人的经验，发现只需要在SD卡的Boot分区中创建空白的ssh文件，就可以让树莓派开机自动启动SS">
@@ -379,7 +383,7 @@
                 
               
 
-              <time title="创建时间：2020-11-08 08:42:39 / 修改时间：09:16:05" itemprop="dateCreated datePublished" datetime="2020-11-08T08:42:39+08:00">2020-11-08</time>
+              <time title="创建时间：2020-11-08 08:42:39 / 修改时间：17:15:20" itemprop="dateCreated datePublished" datetime="2020-11-08T08:42:39+08:00">2020-11-08</time>
             
 
             
@@ -442,6 +446,11 @@
 <li>选择<strong>Yes</strong>，开启VNC服务。</li>
 </ol>
 <p><img src="/images/430.png" alt></p>
+<p>注意：默认情况下，由于树莓派的分辨率为720x480，因此，VNC连上后，无法正常显示桌面。</p>
+<p><img src="/images/431.png" alt></p>
+<p>解决方法：调整分辨率为1920x1080以后，VNC才能正常显示。</p>
+<p>输入<strong>sudo raspi-config</strong>, 打开树莓派配置工具。</p>
+<p><img src="/images/432.png" alt><br><img src="/images/433.png" alt><br><img src="/images/434.png" alt></p>
 
       
     </div>
