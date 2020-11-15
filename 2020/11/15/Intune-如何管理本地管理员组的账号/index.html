@@ -112,33 +112,27 @@
 
 
 
-  <meta name="description" content="SCVMM可以添加与VMM服务器不在相同域的主机。 环境SCVMM服务器操作系统: Windows Server 2016SCVMM版本： SCVMM 2019Hyper-V Host: Windwos Server 2016 SCVMM所在域: mshybrid.comHyper-V主机所在域： azurelab.ml 准备事项 创建Run-As Account， 该账号必须是azurelab.">
-<meta name="keywords" content="SCVMM">
+  <meta name="description" content="通常情况下，计算机的本地管理员账号都会被加入到本地管理员组中，这样，本地管理员就会获得计算机的最高控制权。设想如果有几千台计算机，每次在计算机上将管理员账号加入管理员组，将会花费许多的时间。 如果通过Intune一次性推送策略到所有的计算机，就可以在几分钟内，完成添加管理员的操作。关于如何配置和推送Intune策略，请参考以下步骤：  在Intune管理中心，创建一条Windows10平台的自定义">
+<meta name="keywords" content="Intune">
 <meta property="og:type" content="article">
-<meta property="og:title" content="SCVMM: Add a host in an untrusted AD domian">
-<meta property="og:url" content="http://yoursite.com/2019/07/01/SCVMM-Add-a-host-in-an-untrusted-AD-domian/index.html">
+<meta property="og:title" content="Intune:如何管理本地管理员组的账号">
+<meta property="og:url" content="http://yoursite.com/2020/11/15/Intune-如何管理本地管理员组的账号/index.html">
 <meta property="og:site_name" content="Andy&#39;s Blog">
-<meta property="og:description" content="SCVMM可以添加与VMM服务器不在相同域的主机。 环境SCVMM服务器操作系统: Windows Server 2016SCVMM版本： SCVMM 2019Hyper-V Host: Windwos Server 2016 SCVMM所在域: mshybrid.comHyper-V主机所在域： azurelab.ml 准备事项 创建Run-As Account， 该账号必须是azurelab.">
+<meta property="og:description" content="通常情况下，计算机的本地管理员账号都会被加入到本地管理员组中，这样，本地管理员就会获得计算机的最高控制权。设想如果有几千台计算机，每次在计算机上将管理员账号加入管理员组，将会花费许多的时间。 如果通过Intune一次性推送策略到所有的计算机，就可以在几分钟内，完成添加管理员的操作。关于如何配置和推送Intune策略，请参考以下步骤：  在Intune管理中心，创建一条Windows10平台的自定义">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://yoursite.com/images/354.png">
-<meta property="og:image" content="http://yoursite.com/images/355.png">
-<meta property="og:image" content="http://yoursite.com/images/356.png">
-<meta property="og:image" content="http://yoursite.com/images/357.png">
-<meta property="og:image" content="http://yoursite.com/images/358.png">
-<meta property="og:image" content="http://yoursite.com/images/359.png">
-<meta property="og:image" content="http://yoursite.com/images/360.png">
-<meta property="og:updated_time" content="2020-11-01T10:59:40.276Z">
+<meta property="og:image" content="http://yoursite.com/images/435.png">
+<meta property="og:updated_time" content="2020-11-15T09:10:55.080Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="SCVMM: Add a host in an untrusted AD domian">
-<meta name="twitter:description" content="SCVMM可以添加与VMM服务器不在相同域的主机。 环境SCVMM服务器操作系统: Windows Server 2016SCVMM版本： SCVMM 2019Hyper-V Host: Windwos Server 2016 SCVMM所在域: mshybrid.comHyper-V主机所在域： azurelab.ml 准备事项 创建Run-As Account， 该账号必须是azurelab.">
-<meta name="twitter:image" content="http://yoursite.com/images/354.png">
+<meta name="twitter:title" content="Intune:如何管理本地管理员组的账号">
+<meta name="twitter:description" content="通常情况下，计算机的本地管理员账号都会被加入到本地管理员组中，这样，本地管理员就会获得计算机的最高控制权。设想如果有几千台计算机，每次在计算机上将管理员账号加入管理员组，将会花费许多的时间。 如果通过Intune一次性推送策略到所有的计算机，就可以在几分钟内，完成添加管理员的操作。关于如何配置和推送Intune策略，请参考以下步骤：  在Intune管理中心，创建一条Windows10平台的自定义">
+<meta name="twitter:image" content="http://yoursite.com/images/435.png">
 
 
 
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/07/01/SCVMM-Add-a-host-in-an-untrusted-AD-domian/">
+  <link rel="canonical" href="http://yoursite.com/2020/11/15/Intune-如何管理本地管理员组的账号/">
 
 
 
@@ -148,7 +142,7 @@
   };
 </script>
 
-  <title>SCVMM: Add a host in an untrusted AD domian | Andy's Blog</title>
+  <title>Intune:如何管理本地管理员组的账号 | Andy's Blog</title>
   
 
 
@@ -340,7 +334,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/01/SCVMM-Add-a-host-in-an-untrusted-AD-domian/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/11/15/Intune-如何管理本地管理员组的账号/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Andy">
@@ -357,7 +351,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">SCVMM: Add a host in an untrusted AD domian
+          <h1 class="post-title" itemprop="name headline">Intune:如何管理本地管理员组的账号
               
             
           </h1>
@@ -382,46 +376,16 @@
                 
               
 
-              <time title="创建时间：2019-07-01 15:38:08" itemprop="dateCreated datePublished" datetime="2019-07-01T15:38:08+08:00">2019-07-01</time>
+              <time title="创建时间：2020-11-15 16:33:01 / 修改时间：17:10:55" itemprop="dateCreated datePublished" datetime="2020-11-15T16:33:01+08:00">2020-11-15</time>
             
 
             
               
 
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2020-11-01 18:59:40" itemprop="dateModified" datetime="2020-11-01T18:59:40+08:00">2020-11-01</time>
               
             
           </span>
 
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/企业产品/" itemprop="url" rel="index"><span itemprop="name">企业产品</span></a></span>
-
-                
-                
-              
-            </span>
           
 
           
@@ -450,20 +414,25 @@
       
 
       
-        <p>SCVMM可以添加与VMM服务器不在相同域的主机。</p>
-<h1 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h1><p>SCVMM服务器操作系统: Windows Server 2016<br>SCVMM版本： SCVMM 2019<br>Hyper-V Host: Windwos Server 2016</p>
-<p>SCVMM所在域: mshybrid.com<br>Hyper-V主机所在域： azurelab.ml</p>
-<h1 id="准备事项"><a href="#准备事项" class="headerlink" title="准备事项"></a>准备事项</h1><ul>
-<li>创建Run-As Account， 该账号必须是azurelab.ml域中的账户，并且必须有Hyper-V主机的本地管理员权限</li>
-<li>在SCVMM服务器上，必须能解析Hyper-V host的FQDN主机名。可以用nslookup验证。<a id="more"></a>
-<h1 id="添加主机"><a href="#添加主机" class="headerlink" title="添加主机"></a>添加主机</h1></li>
-</ul>
-<p><img src="/images/354.png" alt><br><img src="/images/355.png" alt><br><img src="/images/356.png" alt><br><img src="/images/357.png" alt><br><img src="/images/358.png" alt><br><img src="/images/359.png" alt></p>
-<h1 id="遇到问题"><a href="#遇到问题" class="headerlink" title="遇到问题"></a>遇到问题</h1><p>添加主机时，遇到以下问题。通过为VMM服务器和Hyper-V主机安装最新的操作系统补丁后，问题解决。</p>
-<p><img src="/images/360.png" alt></p>
-<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ul>
-<li><a href="https://blog.apps.id.au/scvmm-host-not-responding-error-2912-winrm-request-not-supported-0x80070032/" target="_blank" rel="noopener">SCVMM Host Not Responding. Error 2912– WinRM &amp; The request is not supported (0x80070032)</a></li>
-</ul>
+        <p>通常情况下，计算机的本地管理员账号都会被加入到本地管理员组中，这样，本地管理员就会获得计算机的最高控制权。设想如果有几千台计算机，每次在计算机上将管理员账号加入管理员组，将会花费许多的时间。</p>
+<p>如果通过Intune一次性推送策略到所有的计算机，就可以在几分钟内，完成添加管理员的操作。关于如何配置和推送Intune策略，请参考以下步骤：</p>
+<ol>
+<li>在Intune管理中心，创建一条Windows10平台的自定义策略。</li>
+<li>策略的配置参数如下：</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">Name: GroupMember</span><br><span class="line">Description: GroupMember</span><br><span class="line">OMA-URI: ./Device/Vendor/MSFT/Policy/Config/RestrictedGroups/ConfigureGroupMembership</span><br><span class="line">Data type: String</span><br><span class="line">Value： </span><br><span class="line"></span><br><span class="line">&lt;groupmembership&gt;</span><br><span class="line">    &lt;accessgroup desc = &quot;Administrators&quot;&gt;</span><br><span class="line">        &lt;member name = &quot;Administrator&quot;/&gt;</span><br><span class="line">        &lt;member name = &quot;admin&quot;/&gt;</span><br><span class="line">        &lt;member name = &quot;AzureAD\intuneadmin@mshybrid.com&quot;/&gt;</span><br><span class="line">        &lt;member name = &quot;S-1-12-1-2425105774-1271028909-3110942359-1029054307&quot;/&gt;</span><br><span class="line">        &lt;member name = &quot;S-1-12-1-1439795316-1275887166-3987366038-750408428&quot;/&gt;</span><br><span class="line">    &lt;/accessgroup&gt;</span><br><span class="line">&lt;/groupmembership&gt;</span><br></pre></td></tr></table></figure>
+<p><strong>注意：</strong>&lt;accessgroup desc = “Administrators”> 和 &lt;/accessgroup>之间的内容是Administrators组的用户成员。如果要添加一个组，例如Network Configuration Operators，需要增加&lt;accessgroup desc = “Network Configuration Operators”> … 。</p>
+<p><strong>另外，尽量按照本地账号、AzureAD账号、SID的顺序添加member name，否则策略可能会推送失败。</strong></p>
+<p>例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;groupmembership&gt;</span><br><span class="line">    &lt;accessgroup desc = &quot;Administrators&quot;&gt;</span><br><span class="line">        &lt;member name = &quot;Administrator&quot;/&gt;</span><br><span class="line">        &lt;member name = &quot;admin&quot;/&gt;</span><br><span class="line">        &lt;member name = &quot;AzureAD\intuneadmin@mshybrid.com&quot;/&gt;</span><br><span class="line">        &lt;member name = &quot;S-1-12-1-2425105774-1271028909-3110942359-1029054307&quot;/&gt;</span><br><span class="line">        &lt;member name = &quot;S-1-12-1-1439795316-1275887166-3987366038-750408428&quot;/&gt;</span><br><span class="line">    &lt;/accessgroup&gt;</span><br><span class="line">    &lt;accessgroup desc = &quot;Network Configuration Operators&quot;&gt;</span><br><span class="line">        &lt;member name = &quot;netadmin&quot;/&gt;</span><br><span class="line">    &lt;/accessgroup&gt;    </span><br><span class="line">&lt;/groupmembership&gt;</span><br></pre></td></tr></table></figure></p>
+<p>此外：&lt;member name = “S-1-12-1-2425105774-1271028909-3110942359-1029054307”/>对应的是Azure AD中的Global administrator角色。</p>
+<p>&lt;member name = “S-1-12-1-1439795316-1275887166-3987366038-750408428”/>对应的是Azure AD中的Device administrator角色。<br>只要Azure AD中的账号被分配了以上任一一种角色，就会拥有本地计算机的管理员权限。</p>
+<ol start="3">
+<li><p>由于OMA-URI是./Device开头，所以该策略只能被分配给<strong>设备组</strong>，而不是用户组。</p>
+</li>
+<li><p>在本地计算机上，打开计算机管理工具，打开<strong>Administrators</strong>组，可以看到策略已经推送成功。</p>
+</li>
+</ol>
+<p><img src="/images/435.png" alt></p>
 
       
     </div>
@@ -484,7 +453,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/SCVMM/" rel="tag"># SCVMM</a>
+            <a href="/tags/Intune/" rel="tag"># Intune</a>
           
         </div>
       
@@ -517,8 +486,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/06/27/PXE-Boot-一-：工作流程/" rel="next" title="PXE Boot(一)：工作流程">
-                <i class="fa fa-chevron-left"></i> PXE Boot(一)：工作流程
+              <a href="/2020/11/08/树莓派没有显示器如何配置启动SSH和VNC服务/" rel="next" title="树莓派没有显示器如何配置启动SSH和VNC服务">
+                <i class="fa fa-chevron-left"></i> 树莓派没有显示器如何配置启动SSH和VNC服务
               </a>
             
           </div>
@@ -526,10 +495,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/07/03/SCCM-使用PXE的方式安装操作系统/" rel="prev" title="SCCM:使用PXE的方式安装操作系统">
-                SCCM:使用PXE的方式安装操作系统 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -574,17 +539,8 @@
       
 
       
-        <ul class="sidebar-nav motion-element">
-          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
-            文章目录
-          </li>
-          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
-            站点概览
-          </li>
-        </ul>
-      
 
-      <section class="site-overview-wrap sidebar-panel">
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -707,22 +663,6 @@
         </div>
       </section>
 
-      
-      <!--noindex-->
-        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
-          <div class="post-toc">
-
-            
-              
-            
-
-            
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#环境"><span class="nav-number">1.</span> <span class="nav-text">环境</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#准备事项"><span class="nav-number">2.</span> <span class="nav-text">准备事项</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#添加主机"><span class="nav-number">3.</span> <span class="nav-text">添加主机</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#遇到问题"><span class="nav-number">4.</span> <span class="nav-text">遇到问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考资料"><span class="nav-number">5.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
-            
-
-          </div>
-        </section>
-      <!--/noindex-->
       
 
       

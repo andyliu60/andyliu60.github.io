@@ -328,6 +328,215 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/01/SCVMM与Azure集成——管理云端虚拟机（一）/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Andy">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Andy's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/02/01/SCVMM与Azure集成——管理云端虚拟机（一）/" itemprop="url">
+                  SCVMM与Azure集成——管理云端虚拟机（一）
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-02-01 08:55:53" itemprop="dateCreated datePublished" datetime="2019-02-01T08:55:53+08:00">2019-02-01</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2020-11-01 18:59:40" itemprop="dateModified" datetime="2020-11-01T18:59:40+08:00">2020-11-01</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/企业产品/" itemprop="url" rel="index"><span itemprop="name">企业产品</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>SCVMM是一套企业级的虚拟基础架构管理系统，而Azure则是一个公有云平台。通过将Azure订阅与SCVMM集成，我们将可以实现在SCVMM Console 中, 统一管理部署在Azure上的虚拟机。</p>
+<p>通过将SCVMM与Azure集成，我们只可以管理通过<strong>Azure Classic Portal</strong>部署的虚拟机。对于Azure虚拟机，我们主要可以执行以下操作：</p>
+<ul>
+<li>启动(Start)</li>
+<li>关闭(Stop)</li>
+<li>关机(Shut Down)</li>
+<li>重启(Restart)</li>
+<li>用RDP连接(Connect via RDP)</li>
+</ul>
+<p>首先，在进行两者的集成之前，我们需要完成以下准备工作：</p>
+<ul>
+<li>Azure订阅ID</li>
+<li>SCVMMN能访问Internet</li>
+<li>Service Administrator - 拥有Service Administrator权限的Azure账号可以获取到Azure subscription ID和管理证书的信息。</li>
+<li>管理证书（Management certificate）</li>
+</ul>
+<h1 id="获取Azure订阅ID"><a href="#获取Azure订阅ID" class="headerlink" title="获取Azure订阅ID"></a>获取Azure订阅ID</h1><ol>
+<li>登录Azure门户，请确保登录账号至少是Service Administrator</li>
+<li>在“所有服务”中，查找“订阅”</li>
+<li>在“订阅”页面中，可以查看订阅ID<br><img src="/images/23.png" alt></li>
+</ol>
+<h1 id="管理证书"><a href="#管理证书" class="headerlink" title="管理证书"></a>管理证书</h1><p>通过将管理证书与Azure关联后，VMM才可以访问Azure的服务管理API。证书必须符合X.509 v3规范。</p>
+<ol>
+<li><p>在安装有VMM Server的服务器上，通过以下PowerShell命令创建一张自签名的证书，证书将保存在本地计算机的个人目录下。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$cert = New-SelfSignedCertificate -DnsName yourdomain.cloudapp.net -CertStoreLocation &quot;cert:\LocalMachine\My&quot; -KeyLength 2048 -KeySpec &quot;KeyExchange&quot;</span><br><span class="line">$password = ConvertTo-SecureString -String &quot;your-password&quot; -Force -AsPlainText</span><br><span class="line">Export-PfxCertificate -Cert $cert -FilePath &quot;.\my-cert-file.pfx&quot; -Password $password</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>将导出的PFX证书文件安装到VMM Console所在的计算机上，证书存储位置：当前用户-个人</p>
+</li>
+<li><p>用以下命令导出格式为.cer的证书文件。<br><code>Export-Certificate -Type CERT -Cert $cert -FilePath .\my-cert-file.cer</code></p>
+</li>
+<li><p>将导出的cer证书文件上传到Azure。在“订阅” - “管理证书”中，上传证书。<br><img src="/images/24.png" alt><br><img src="/images/25.png" alt></p>
+<h1 id="SCVMM和Azure集成"><a href="#SCVMM和Azure集成" class="headerlink" title="SCVMM和Azure集成"></a>SCVMM和Azure集成</h1></li>
+<li><p>在SCVMM Console中，选择“VMs and Services” - “Azure Subscriptions”。点击“Add Subscription”。<br><img src="/images/26.png" alt></p>
+</li>
+<li><p>输入“Display name”， “Subscription ID”，并选择相应的管理证书。<br><img src="/images/27.png" alt></p>
+</li>
+<li><p>如果添加Azure订阅成功，就可以看到VM的数量，以及最新的状态。<br><img src="/images/28.png" alt></p>
+</li>
+</ol>
+<p><img src="/images/29.png" alt></p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/20/树莓派搭建BT下载服务器/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2005,194 +2214,6 @@ y: 3
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/05/str和repr/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Andy">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Andy's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/12/05/str和repr/" itemprop="url">
-                  str和repr
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-12-05 15:07:21" itemprop="dateCreated datePublished" datetime="2018-12-05T15:07:21+08:00">2018-12-05</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2020-11-01 18:59:40" itemprop="dateModified" datetime="2020-11-01T18:59:40+08:00">2020-11-01</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/编程/" itemprop="url" rel="index"><span itemprop="name">编程</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>str函数和repr函数是将值转换为字符串的两种机制。</p>
-<p><strong>str函数：把值转换为合理形式的字符串，以便用户可以理解。</strong></p>
-<p><strong>repr函数：它会创建一个字符串，以合法的Python表达式的形式来表示值。</strong></p>
-<p>str例子：</p>
-<pre><code>&gt;&gt;&gt; s = &apos;Hello, world!&apos;
-
-&gt;&gt;&gt; print str(s)
-Hello, world!
-
-&gt;&gt;&gt; print str(2.0/11.0)
-0.181818181818
-</code></pre><p>repr例子：</p>
-<pre><code>&gt;&gt;&gt; s = &apos;Hello, world!&apos;
-
-&gt;&gt;&gt; print repr(s)
-&apos;Hello, world!&apos;
-
-&gt;&gt;&gt; print repr(2.0/11.0)
-0.18181818181818182
-</code></pre>
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2240,7 +2261,7 @@ Hello, world!
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">72</span>
+                    <span class="site-state-item-count">73</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

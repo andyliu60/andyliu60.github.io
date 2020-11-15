@@ -328,6 +328,164 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/11/15/Intune-如何管理本地管理员组的账号/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Andy">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Andy's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/11/15/Intune-如何管理本地管理员组的账号/" itemprop="url">
+                  Intune:如何管理本地管理员组的账号
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2020-11-15 16:33:01 / 修改时间：17:10:55" itemprop="dateCreated datePublished" datetime="2020-11-15T16:33:01+08:00">2020-11-15</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>通常情况下，计算机的本地管理员账号都会被加入到本地管理员组中，这样，本地管理员就会获得计算机的最高控制权。设想如果有几千台计算机，每次在计算机上将管理员账号加入管理员组，将会花费许多的时间。</p>
+<p>如果通过Intune一次性推送策略到所有的计算机，就可以在几分钟内，完成添加管理员的操作。关于如何配置和推送Intune策略，请参考以下步骤：</p>
+<ol>
+<li>在Intune管理中心，创建一条Windows10平台的自定义策略。</li>
+<li>策略的配置参数如下：</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">Name: GroupMember</span><br><span class="line">Description: GroupMember</span><br><span class="line">OMA-URI: ./Device/Vendor/MSFT/Policy/Config/RestrictedGroups/ConfigureGroupMembership</span><br><span class="line">Data type: String</span><br><span class="line">Value： </span><br><span class="line"></span><br><span class="line">&lt;groupmembership&gt;</span><br><span class="line">    &lt;accessgroup desc = &quot;Administrators&quot;&gt;</span><br><span class="line">        &lt;member name = &quot;Administrator&quot;/&gt;</span><br><span class="line">        &lt;member name = &quot;admin&quot;/&gt;</span><br><span class="line">        &lt;member name = &quot;AzureAD\intuneadmin@mshybrid.com&quot;/&gt;</span><br><span class="line">        &lt;member name = &quot;S-1-12-1-2425105774-1271028909-3110942359-1029054307&quot;/&gt;</span><br><span class="line">        &lt;member name = &quot;S-1-12-1-1439795316-1275887166-3987366038-750408428&quot;/&gt;</span><br><span class="line">    &lt;/accessgroup&gt;</span><br><span class="line">&lt;/groupmembership&gt;</span><br></pre></td></tr></table></figure>
+<p><strong>注意：</strong>&lt;accessgroup desc = “Administrators”> 和 &lt;/accessgroup>之间的内容是Administrators组的用户成员。如果要添加一个组，例如Network Configuration Operators，需要增加&lt;accessgroup desc = “Network Configuration Operators”> … 。</p>
+<p><strong>另外，尽量按照本地账号、AzureAD账号、SID的顺序添加member name，否则策略可能会推送失败。</strong></p>
+<p>例如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;groupmembership&gt;</span><br><span class="line">    &lt;accessgroup desc = &quot;Administrators&quot;&gt;</span><br><span class="line">        &lt;member name = &quot;Administrator&quot;/&gt;</span><br><span class="line">        &lt;member name = &quot;admin&quot;/&gt;</span><br><span class="line">        &lt;member name = &quot;AzureAD\intuneadmin@mshybrid.com&quot;/&gt;</span><br><span class="line">        &lt;member name = &quot;S-1-12-1-2425105774-1271028909-3110942359-1029054307&quot;/&gt;</span><br><span class="line">        &lt;member name = &quot;S-1-12-1-1439795316-1275887166-3987366038-750408428&quot;/&gt;</span><br><span class="line">    &lt;/accessgroup&gt;</span><br><span class="line">    &lt;accessgroup desc = &quot;Network Configuration Operators&quot;&gt;</span><br><span class="line">        &lt;member name = &quot;netadmin&quot;/&gt;</span><br><span class="line">    &lt;/accessgroup&gt;    </span><br><span class="line">&lt;/groupmembership&gt;</span><br></pre></td></tr></table></figure></p>
+<p>此外：&lt;member name = “S-1-12-1-2425105774-1271028909-3110942359-1029054307”/>对应的是Azure AD中的Global administrator角色。</p>
+<p>&lt;member name = “S-1-12-1-1439795316-1275887166-3987366038-750408428”/>对应的是Azure AD中的Device administrator角色。<br>只要Azure AD中的账号被分配了以上任一一种角色，就会拥有本地计算机的管理员权限。</p>
+<ol start="3">
+<li><p>由于OMA-URI是./Device开头，所以该策略只能被分配给<strong>设备组</strong>，而不是用户组。</p>
+</li>
+<li><p>在本地计算机上，打开计算机管理工具，打开<strong>Administrators</strong>组，可以看到策略已经推送成功。</p>
+</li>
+</ol>
+<p><img src="/images/435.png" alt></p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/11/08/树莓派没有显示器如何配置启动SSH和VNC服务/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1276,162 +1434,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/02/16/BT种子放到目录下后自动下载/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Andy">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Andy's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/02/16/BT种子放到目录下后自动下载/" itemprop="url">
-                  BT种子放到目录下后自动下载
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2020-02-16 14:21:55" itemprop="dateCreated datePublished" datetime="2020-02-16T14:21:55+08:00">2020-02-16</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2020-11-01 18:59:40" itemprop="dateModified" datetime="2020-11-01T18:59:40+08:00">2020-11-01</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Transmission支持将种子文件放到指定目录下后，就会自动创建下载任务。</p>
-<p>配置参数</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&quot;watch-dir&quot;: &quot;/home/pi/Downloads/torrents&quot;,</span><br><span class="line">&quot;watch-dir-enabled&quot;: true</span><br></pre></td></tr></table></figure>
-<p>配置参数<em>watch-dir</em>，指定存放种子文件的目录。为了避免权限不足，建议为目录设置775权限。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chmod 775 torrents</span><br></pre></td></tr></table></figure></p>
-<p>为了使配置生效，需要重新启动Transmission-daemon服务。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo service transmission-daemon restart</span><br></pre></td></tr></table></figure></p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/02/16/BT下载完成后发送通知/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1540,6 +1542,162 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vi /etc/transmission-daemon/settings.json</span><br></pre></td></tr></table></figure>
 <p>修改以下参数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&quot;script-torrent-done-enabled&quot;: true, # 下载完成后，调用并运行脚本</span><br><span class="line">&quot;script-torrent-done-filename&quot;: &quot;/home/pi/Documents/btfinish.sh&quot;, # 指定脚本的位置</span><br></pre></td></tr></table></figure></p>
 <h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p><a href="https://github.com/transmission/transmission/wiki/Scripts" target="_blank" rel="noopener">https://github.com/transmission/transmission/wiki/Scripts</a></p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/02/16/BT种子放到目录下后自动下载/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Andy">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Andy's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/02/16/BT种子放到目录下后自动下载/" itemprop="url">
+                  BT种子放到目录下后自动下载
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2020-02-16 14:21:55" itemprop="dateCreated datePublished" datetime="2020-02-16T14:21:55+08:00">2020-02-16</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2020-11-01 18:59:40" itemprop="dateModified" datetime="2020-11-01T18:59:40+08:00">2020-11-01</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Transmission支持将种子文件放到指定目录下后，就会自动创建下载任务。</p>
+<p>配置参数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&quot;watch-dir&quot;: &quot;/home/pi/Downloads/torrents&quot;,</span><br><span class="line">&quot;watch-dir-enabled&quot;: true</span><br></pre></td></tr></table></figure>
+<p>配置参数<em>watch-dir</em>，指定存放种子文件的目录。为了避免权限不足，建议为目录设置775权限。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chmod 775 torrents</span><br></pre></td></tr></table></figure></p>
+<p>为了使配置生效，需要重新启动Transmission-daemon服务。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo service transmission-daemon restart</span><br></pre></td></tr></table></figure></p>
 
           
         
@@ -1914,201 +2072,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/15/更改树莓派的系统和软件更新源/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Andy">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Andy's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/10/15/更改树莓派的系统和软件更新源/" itemprop="url">
-                  更改树莓派的系统和软件更新源
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-10-15 16:21:27" itemprop="dateCreated datePublished" datetime="2019-10-15T16:21:27+08:00">2019-10-15</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2020-11-01 18:59:40" itemprop="dateModified" datetime="2020-11-01T18:59:40+08:00">2020-11-01</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/智能家居/" itemprop="url" rel="index"><span itemprop="name">智能家居</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>由于树莓派的更新源服务器都在国外，因此，每次更新都很慢，甚至在更新过程中，常常会因为网络问题而导致中断。通过将更新源更改为国内地址，可以大大提高更新的速度。</p>
-<h1 id="修改软件更新源"><a href="#修改软件更新源" class="headerlink" title="修改软件更新源"></a>修改软件更新源</h1><p>修改配置文件/etc/apt/sources.list</p>
-<p><code>sudo vi /etc/apt/sources.list</code></p>
-<p>将原来的更新源用#注释，然后添加新的更新源。</p>
-<p><strong>deb <a href="http://mirrors.ustc.edu.cn/raspbian/raspbian/" target="_blank" rel="noopener">http://mirrors.ustc.edu.cn/raspbian/raspbian/</a> stretch main contrib non-free rpi</strong></p>
-<p><img src="/images/409.png" alt></p>
-<h1 id="修改系统更新源"><a href="#修改系统更新源" class="headerlink" title="修改系统更新源"></a>修改系统更新源</h1><p>修改配置文件 /etc/apt/sources.list.d/raspi.list </p>
-<p><code>sudo vi  /etc/apt/sources.list.d/raspi.list</code> </p>
-<p>将原来的更新源用#注释，然后添加新的更新源。</p>
-<p><strong>deb <a href="http://mirrors.ustc.edu.cn/raspbian/raspbian/" target="_blank" rel="noopener">http://mirrors.ustc.edu.cn/raspbian/raspbian/</a> stretch main ui</strong></p>
-<p><img src="/images/410.png" alt></p>
-<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ul>
-<li><a href="https://www.raspbian.org/RaspbianRepository" target="_blank" rel="noopener">Raspbian Repository</a></li>
-<li><a href="https://www.raspbian.org/RaspbianMirrors" target="_blank" rel="noopener">Raspbian Mirrors</a></li>
-</ul>
-<h1 id="更新源列表"><a href="#更新源列表" class="headerlink" title="更新源列表"></a>更新源列表</h1><p>中国科学技术大学<br>Raspbian <a href="http://mirrors.ustc.edu.cn/raspbian/raspbian/" target="_blank" rel="noopener">http://mirrors.ustc.edu.cn/raspbian/raspbian/</a></p>
-<p>阿里云<br>Raspbian <a href="http://mirrors.aliyun.com/raspbian/raspbian/" target="_blank" rel="noopener">http://mirrors.aliyun.com/raspbian/raspbian/</a></p>
-<p>清华大学<br>Raspbian <a href="http://mirrors.tuna.tsinghua.edu.cn/raspbian/raspbian/" target="_blank" rel="noopener">http://mirrors.tuna.tsinghua.edu.cn/raspbian/raspbian/</a></p>
-<p>华中科技大学<br>Raspbian <a href="http://mirrors.hustunique.com/raspbian/raspbian/" target="_blank" rel="noopener">http://mirrors.hustunique.com/raspbian/raspbian/</a> </p>
-<p>Arch Linux ARM <a href="http://mirrors.hustunique.com/archlinuxarm/" target="_blank" rel="noopener">http://mirrors.hustunique.com/archlinuxarm/</a></p>
-<p>华南农业大学（华南用户）<br>Raspbian <a href="http://mirrors.scau.edu.cn/raspbian/" target="_blank" rel="noopener">http://mirrors.scau.edu.cn/raspbian/</a></p>
-<p>大连东软信息学院源（北方用户）<br>Raspbian <a href="http://mirrors.neusoft.edu.cn/raspbian/raspbian/" target="_blank" rel="noopener">http://mirrors.neusoft.edu.cn/raspbian/raspbian/</a></p>
-<p>重庆大学源（中西部用户）<br>Raspbian <a href="http://mirrors.cqu.edu.cn/Raspbian/raspbian/" target="_blank" rel="noopener">http://mirrors.cqu.edu.cn/Raspbian/raspbian/</a></p>
-<p>新加坡国立大学<br>Raspbian <a href="http://mirror.nus.edu.sg/raspbian/raspbian" target="_blank" rel="noopener">http://mirror.nus.edu.sg/raspbian/raspbian</a></p>
-<p>牛津大学<br>Raspbian <a href="http://mirror.ox.ac.uk/sites/archive.raspbian.org/archive/raspbian/" target="_blank" rel="noopener">http://mirror.ox.ac.uk/sites/archive.raspbian.org/archive/raspbian/</a></p>
-<p>韩国KAIST大学<br>Raspbian <a href="http://ftp.kaist.ac.kr/raspbian/raspbian/" target="_blank" rel="noopener">http://ftp.kaist.ac.kr/raspbian/raspbian/</a></p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2156,7 +2119,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">72</span>
+                    <span class="site-state-item-count">73</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
