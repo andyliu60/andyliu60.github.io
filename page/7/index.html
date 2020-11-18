@@ -328,6 +328,213 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/05/input和raw-input的比较/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Andy">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Andy's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/12/05/input和raw-input的比较/" itemprop="url">
+                  input和raw_input的比较
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-12-05 15:21:48" itemprop="dateCreated datePublished" datetime="2018-12-05T15:21:48+08:00">2018-12-05</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2020-11-01 18:59:40" itemprop="dateModified" datetime="2020-11-01T18:59:40+08:00">2020-11-01</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/编程/" itemprop="url" rel="index"><span itemprop="name">编程</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p><strong>input会假设用户输入的是合法的Python表达式。</strong></p>
+<p>例子</p>
+<pre><code>&gt;&gt;&gt; name = input(&quot;What is your name? &quot;)
+What is your name? John
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+  File &quot;&lt;string&gt;&quot;, line 1, in &lt;module&gt;
+NameError: name &apos;John&apos; is not defined
+</code></pre><p>正确的输入应该是”John”</p>
+<pre><code>&gt;&gt;&gt; name = input(&quot;What is your name? &quot;)
+What is your name? &quot;John&quot;
+&gt;&gt;&gt; print name
+John
+</code></pre><p><strong>raw_input会把所有的输入当作原始数据(raw data)，然后将其放入字符串中。</strong></p>
+<p>例子</p>
+<pre><code>&gt;&gt;&gt; input(&quot;Enter a number: &quot;)
+Enter a number: 3
+3
+&gt;&gt;&gt; raw_input(&quot;Enter a number: &quot;)
+Enter a number: 3
+&apos;3&apos;
+</code></pre><p><strong>注意：由于raw_input会将原始数据放入字符串，因此，即使输入数字，也会转化为字符串。而input则不会将输入的数字转换为字符串。</strong></p>
+<p>例子1</p>
+<pre><code>&gt;&gt;&gt; x = raw_input(&quot;x: &quot;)
+x: 2
+&gt;&gt;&gt; y = raw_input(&quot;y: &quot;)
+y: 3
+&gt;&gt;&gt; x * y
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in &lt;module&gt;
+TypeError: can&apos;t multiply sequence by non-int of type &apos;str&apos;
+</code></pre><p>例子2</p>
+<pre><code>&gt;&gt;&gt; x = input(&quot;x: &quot;)
+x: 2
+&gt;&gt;&gt; y = input(&quot;y: &quot;)
+y: 3
+&gt;&gt;&gt; x * y
+6
+</code></pre>
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/05/str和repr/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1997,198 +2204,6 @@ Hello, world!
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/13/什么是Intune/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Andy">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Andy's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/11/13/什么是Intune/" itemprop="url">
-                  什么是Intune
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-11-13 14:29:47" itemprop="dateCreated datePublished" datetime="2018-11-13T14:29:47+08:00">2018-11-13</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2020-11-01 18:59:40" itemprop="dateModified" datetime="2020-11-01T18:59:40+08:00">2020-11-01</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/企业产品/" itemprop="url" rel="index"><span itemprop="name">企业产品</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h1 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h1><p>Intune是一个企业移动化管理(EMM)的解决方案。与同类产品不同的是，Intune首先是一项云服务，因此，企业不需要在内网部署服务器和后台软件。此外，企业需要在线订阅该项服务，并按照每用户每月的单价来付费。</p>
-<p>Intune主要通过以下几个方面对企业进行移动化管理：</p>
-<ul>
-<li>管理企业的移动终端设备，例如iPhone, iPad, Android, Surface等。</li>
-<li>管理企业的移动应用，例如Office 365, Salesforce等。</li>
-<li>保护企业的数据。</li>
-<li>保证设备和应用的合规性。</li>
-</ul>
-<p>此外，Intune通过与Azure Active Directory集成实现了身份验证和访问控制功能，与Azure Information Protection实现了数据保护功能。</p>
-<h2 id="设备管理"><a href="#设备管理" class="headerlink" title="设备管理"></a>设备管理</h2><p>设备管理通常包含以下内容：</p>
-<ul>
-<li>注册设备，并对所有设备进行资产管理</li>
-<li>推送设备的配置</li>
-<li>推送配置文件，例如邮箱、VPN和Wi-Fi</li>
-<li>报告并检查设备的合规性</li>
-<li>删除企业数据</li>
-</ul>
-          <!--noindex-->
-          
-            <div class="post-button text-center">
-              <a class="btn" href="/2018/11/13/什么是Intune/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-         
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2236,7 +2251,7 @@ Hello, world!
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">73</span>
+                    <span class="site-state-item-count">74</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
