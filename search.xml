@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[如何将Azure AD的账号或角色的objectid转换成本地计算机的sid]]></title>
+    <url>%2F2020%2F11%2F25%2F%E5%A6%82%E4%BD%95%E5%B0%86Azure-AD%E7%9A%84%E8%B4%A6%E5%8F%B7%E6%88%96%E8%A7%92%E8%89%B2%E7%9A%84objectid%E8%BD%AC%E6%8D%A2%E6%88%90%E6%9C%AC%E5%9C%B0%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%9A%84sid%2F</url>
+    <content type="text"><![CDATA[安装Azure AD PowerShell模块 Install-Module -Name AzureAD 用管理员账号登录到Azure AD Connect-AzureAD 通过以下命令，获取到Azure AD中角色，其中Device Administrators和Company Administrators（也就是Global Administrators）会自动被加入到本地管理员组。 Get-AzureADDirectoryRole 可以通过访问以下链接，下载脚本。该脚本可以将AzureAD中的用户、组和角色的ObjectID转换成SID。 https://github.com/okieselbach/Intune/blob/master/Convert-AzureAdObjectIdToSid.ps1 关于该脚本作者的博客，请点击以下链接。 https://oliverkieselbach.com/2020/05/13/powershell-helpers-to-convert-azure-ad-object-ids-and-sids/]]></content>
+      <tags>
+        <tag>Intune</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[如何配置Windows Server RRAS VPN服务器]]></title>
     <url>%2F2020%2F11%2F17%2F%E5%A6%82%E4%BD%95%E9%85%8D%E7%BD%AEWindows-Server-RRAS-VPN%E6%9C%8D%E5%8A%A1%E5%99%A8%2F</url>
     <content type="text"><![CDATA[按照以下步骤，可以在Windows Server 2016上配置PPTP VPN服务器。 安装RRAS服务 打开Server Manager，选择Add roles and features。 点击Next。 点击Next。 点击Next。 选择Remote Access，点击Next。 点击Next。 点击Next。 选择DirectAccess and VPN(RAS)和Routing，点击Next。 点击Next。 点击Next。 点击Next。 点击Close。 初始配置 在Server Manager中，打开RRAS配置向导。 选择Deploy VPN Only。 右键选择WIN2016(local)，选择Configure and Enable Routing and Remote Access。 打开配置向导，点击Next。 选择Custom Configuration，点击Next。 选择VPN access, NAT, LAN routing，点击Next。 点击Finish。 配置认证方式 右键选择WIN2016(local)，选择Properties。 选择Security，选择Authentication Methods…。 选择MS-CHAP v2和CHAP两种认证方式。 配置IP地址池如果内网没有DHCP服务器为VPN客户端分配IP地址，可以通过以下方式在RRAS服务器上配置IP地址池： 右键选择WIN2016(local)，选择Properties。 选择Security，选择IPv4。 选择Static address pool, 点击Add。 配置用户账号 打开计算机管理器 打开用户属性 选择Dial-in, 在Network Access Permission，选择Allow access。 客户端连接 打开Settings - Network&amp;Internet。 选择VPN，点击**Add a VPN connection。 选择VPN类型为PPTP，并输入VPN服务器的IP地址或者名称，然后保存。 点击连接VPN。 在CMD中，输入ipconfig命令可以看到已经获取到VPN服务器分配的IP地址。 在CMD中，用tracert追踪到VPN服务器内网口IP地址(172.16.1.20)，以及Hyper-V主机的IP地址(172.16.1.1)，都会先经过172.16.1.100。该地址为为RRAS服务器虚拟网口(Internal)的IP地址。 在RRAS服务器上，打开CMD窗口，并输入ipconfig，可以看到PPP adapter RAS (Dial In) Interface的IP地址为172.16.1.100。]]></content>

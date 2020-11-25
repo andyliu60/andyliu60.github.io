@@ -328,6 +328,167 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/02/14/Wi-Fi密码转换成二维码/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Andy">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Andy's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/02/14/Wi-Fi密码转换成二维码/" itemprop="url">
+                  Wi-Fi密码转换成二维码
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2020-02-14 18:17:55" itemprop="dateCreated datePublished" datetime="2020-02-14T18:17:55+08:00">2020-02-14</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2020-11-01 18:59:40" itemprop="dateModified" datetime="2020-11-01T18:59:40+08:00">2020-11-01</time>
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="生成二维码"><a href="#生成二维码" class="headerlink" title="生成二维码"></a>生成二维码</h1><p>下载并安装<a href="https://packages.debian.org/stable/qrencode" target="_blank" rel="noopener">qrencode</a>.</p>
+<p>运行以下命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">qrencode -o wifi.png &quot;WIFI:T:WPA;S:&lt;SSID&gt;;P:&lt;PASSWORD&gt;;;&quot;</span><br></pre></td></tr></table></figure>
+<p>将&lt;SSID> 替换成Wi-Fi网络的名称，将&lt;PASSWORD>替换成Wi-Fi网络的密码。</p>
+<p>如果密码中包含“:”，需要用反斜杠进行转义。例如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;WIFI:T:WPA;S:&lt;SSID&gt;;P:pass\:word;;&quot;</span><br></pre></td></tr></table></figure>
+<h1 id="扫描二维码"><a href="#扫描二维码" class="headerlink" title="扫描二维码"></a>扫描二维码</h1><p>在iPhone手机上，打开相机，直接扫码二维码。</p>
+<p>  <img src="/images/412.png" alt></p>
+<p>在Android手机上，打开WiFi设置，选择需要连接的Wi-Fi网络，扫码二维码。</p>
+<p> <img src="/images/413.png" alt><br> <img src="/images/414.png" alt></p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/16/在不加入域的工作机上安装SCVMM-Console/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1939,186 +2100,6 @@ Get-Command -Name *log* -CommandType Cmdlet
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/07/08/如何安装Windows版OpenSSH/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Andy">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Andy's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/07/08/如何安装Windows版OpenSSH/" itemprop="url">
-                  如何安装Windows版OpenSSH
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-07-08 14:44:16" itemprop="dateCreated datePublished" datetime="2019-07-08T14:44:16+08:00">2019-07-08</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2020-11-01 18:59:40" itemprop="dateModified" datetime="2020-11-01T18:59:40+08:00">2020-11-01</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/企业产品/" itemprop="url" rel="index"><span itemprop="name">企业产品</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <p>在Windows 10 1809和Windows Server 2019或者以上的操作系统中，默认已经包含OpenSSH客户端和服务器功能，可以在Settings - Apps中启用。</p>
-<p>本文主要介绍如何在Windows Server 2016上安装OpenSSH。</p>
-<h1 id="安装OpenSSH"><a href="#安装OpenSSH" class="headerlink" title="安装OpenSSH"></a>安装OpenSSH</h1><ol>
-<li>下载<a href="https://github.com/PowerShell/Win32-OpenSSH/releases" target="_blank" rel="noopener">OpenSSH</a>，通常下载的文件名为<strong>OpenSSH-Win64.zip</strong>。</li>
-<li>解压文件<strong>OpenSSH-Win64.zip</strong>，并将其保存到<strong>C:\Program Files\</strong>。<br><img src="/images/362.png" alt>
-          <!--noindex-->
-          
-            <div class="post-button text-center">
-              <a class="btn" href="/2019/07/08/如何安装Windows版OpenSSH/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-         
-          <!--/noindex-->
-        
-      
-    </li></ol></div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2166,7 +2147,7 @@ Get-Command -Name *log* -CommandType Cmdlet
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">74</span>
+                    <span class="site-state-item-count">75</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
