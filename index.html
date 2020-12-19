@@ -328,6 +328,324 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/12/19/如何访问不加入域的Hyper-V服务器/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Andy">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Andy's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/12/19/如何访问不加入域的Hyper-V服务器/" itemprop="url">
+                  如何访问不加入域的Hyper-V服务器
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2020-12-19 15:47:25 / 修改时间：15:58:13" itemprop="dateCreated datePublished" datetime="2020-12-19T15:47:25+08:00">2020-12-19</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Hyper-V服务器"><a href="#Hyper-V服务器" class="headerlink" title="Hyper-V服务器"></a>Hyper-V服务器</h1><ol>
+<li><p>打开PowerShell，启用WinRM。</p>
+<p> <code>Enable-PSRemoting</code></p>
+</li>
+<li><p>启用并配置CredSSP</p>
+<p><code>Enable-WSManCredSSP -Role server</code></p>
+</li>
+</ol>
+<h1 id="Windows客户机"><a href="#Windows客户机" class="headerlink" title="Windows客户机"></a>Windows客户机</h1><ol>
+<li><p>打开PowerShell, 启用WinRM</p>
+<p><code>Enable-PSRemoting</code></p>
+</li>
+<li><p>配置受信任的主机</p>
+<p><code>Set-Item WSMan:\localhost\Client\TrustedHosts -Value *</code></p>
+</li>
+<li><p>启用并配置CredSSP</p>
+<p><code>Enable-WSManCredSSP -Role client -DelegateComputer *</code></p>
+</li>
+<li><p>打开本地组策略管理器，选择<strong>Computer Configuration - Administrative Templates - System - Credential Delegation</strong></p>
+</li>
+</ol>
+<p><img src="/images/469.png" alt></p>
+<ol start="5">
+<li><p>选择<strong>Allow delegating fresh credentials with NTLM-only server authentication</strong><br><img src="/images/470.png" alt></p>
+</li>
+<li><p>输入<strong>wsman/*</strong><br><img src="/images/471.png" alt></p>
+</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/12/19/如何用System帐号运行程序/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Andy">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Andy's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/12/19/如何用System帐号运行程序/" itemprop="url">
+                  如何用System帐号运行程序
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2020-12-19 10:53:29 / 修改时间：11:08:10" itemprop="dateCreated datePublished" datetime="2020-12-19T10:53:29+08:00">2020-12-19</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>某些情况下，需要用System账号来运行程序。以下针对CMD为例，通过Psexec来使用SYSTEM账号运行cmd.exe。</p>
+<ol>
+<li>下载<a href="https://docs.microsoft.com/en-us/sysinternals/downloads/psexec" target="_blank" rel="noopener">PsExec</a>。</li>
+<li>将下载的<strong>PsTools.zip</strong>压缩包解压后，拷贝文件<strong>PsExec.exe</strong>或者<strong>PsExec64.exe</strong>到<strong>C:\Windows\System32</strong>目录。</li>
+<li>以管理员身份运行CMD</li>
+<li><p>输入以下命令后，会打开一个新的以SYSTEM账号运行的命令行窗口</p>
+<p> <code>PsExec.exe -i -d -s cmd.exe</code></p>
+</li>
+<li><p>打开任务管理器，查看进程cmd.exe的运行账号为SYSTEM。</p>
+</li>
+</ol>
+<p><img src="/images/468.png" alt></p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/11/25/如何将Azure-AD的账号或角色的objectid转换成本地计算机的sid/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1740,323 +2058,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/02/16/BT种子放到目录下后自动下载/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Andy">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Andy's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/02/16/BT种子放到目录下后自动下载/" itemprop="url">
-                  BT种子放到目录下后自动下载
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2020-02-16 14:21:55" itemprop="dateCreated datePublished" datetime="2020-02-16T14:21:55+08:00">2020-02-16</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2020-11-01 18:59:40" itemprop="dateModified" datetime="2020-11-01T18:59:40+08:00">2020-11-01</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Transmission支持将种子文件放到指定目录下后，就会自动创建下载任务。</p>
-<p>配置参数</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&quot;watch-dir&quot;: &quot;/home/pi/Downloads/torrents&quot;,</span><br><span class="line">&quot;watch-dir-enabled&quot;: true</span><br></pre></td></tr></table></figure>
-<p>配置参数<em>watch-dir</em>，指定存放种子文件的目录。为了避免权限不足，建议为目录设置775权限。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chmod 775 torrents</span><br></pre></td></tr></table></figure></p>
-<p>为了使配置生效，需要重新启动Transmission-daemon服务。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo service transmission-daemon restart</span><br></pre></td></tr></table></figure></p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/02/16/BT下载完成后发送通知/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Andy">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Andy's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2020/02/16/BT下载完成后发送通知/" itemprop="url">
-                  BT下载完成后发送通知
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2020-02-16 14:21:55" itemprop="dateCreated datePublished" datetime="2020-02-16T14:21:55+08:00">2020-02-16</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2020-11-01 18:59:40" itemprop="dateModified" datetime="2020-11-01T18:59:40+08:00">2020-11-01</time>
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h1><p>在树莓派上，每次通过Transmission下载文件时，都要通过浏览器查看文件是否已下载完成。最好能在文件下载完成后，通过手机自动发送下载完成通知。</p>
-<h1 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h1><p>Transmission支持当文件下载完成后，可以运行指定路径的脚本。结合IFTTT，可以将下载完成的文件名发送到手机端。</p>
-<h1 id="脚本"><a href="#脚本" class="headerlink" title="脚本"></a>脚本</h1><p>创建脚本文件<em>btfinish.sh</em>：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">touch /home/pi/Documents/btfinish.sh</span><br><span class="line">chmod 775 /home/pi/Documents/btfinish.sh</span><br></pre></td></tr></table></figure></p>
-<p>脚本内容如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/bash</span><br><span class="line"></span><br><span class="line">/home/pi/Documents/bt_ifttt.py &quot;$TR_TORRENT_NAME&quot;</span><br></pre></td></tr></table></figure></p>
-<p>创建Python脚本文件<em>bt_ifttt.py</em>，该脚本将会向IFTTT服务发送下载完成的消息。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/env python3</span><br><span class="line"># -*- coding: utf-8 -*-</span><br><span class="line"></span><br><span class="line">&apos;This is a module used to communicate with IFTTT platform.&apos;</span><br><span class="line"></span><br><span class="line">__author__ = &apos;Andy Liu&apos;</span><br><span class="line"></span><br><span class="line">import requests</span><br><span class="line">import subprocess</span><br><span class="line">import sys</span><br><span class="line"></span><br><span class="line">class Notification(object):</span><br><span class="line">    </span><br><span class="line">	mykey = &apos;&apos;</span><br><span class="line">	def __init__(self, event, **values):</span><br><span class="line">		self.__url = &quot;https://maker.ifttt.com/trigger/%s/with/key/%s&quot; % (event, self.mykey)</span><br><span class="line">		self.__values = values</span><br><span class="line">	</span><br><span class="line">	def sent(self):</span><br><span class="line">		requests.post(self.__url, data=self.__values)</span><br><span class="line"></span><br><span class="line">	@property</span><br><span class="line">	def url(self):</span><br><span class="line">		return self.__url</span><br><span class="line"></span><br><span class="line">	@property</span><br><span class="line">	def values(self):</span><br><span class="line">		return self.__values</span><br><span class="line"></span><br><span class="line">if __name__ == &apos;__main__&apos;:</span><br><span class="line">        bt_file_name = sys.argv[1]  # 从脚本外部获取参数</span><br><span class="line">        n = Notification(&apos;bt_download&apos;, value1 = bt_file_name) # IFTTT的事件名称和参数值1</span><br><span class="line">        n.sent()</span><br></pre></td></tr></table></figure></p>
-<h1 id="IFTTT"><a href="#IFTTT" class="headerlink" title="IFTTT"></a>IFTTT</h1><p><img src="./images/415.png" alt><br><img src="./images/416.png" alt><br><img src="./images/417.png" alt><br><img src="./images/418.png" alt><br><img src="./images/419.png" alt></p>
-<h1 id="配置文件"><a href="#配置文件" class="headerlink" title="配置文件"></a>配置文件</h1><p>修改Tranmission-daemon配置文件settings.json。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo vi /etc/transmission-daemon/settings.json</span><br></pre></td></tr></table></figure>
-<p>修改以下参数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&quot;script-torrent-done-enabled&quot;: true, # 下载完成后，调用并运行脚本</span><br><span class="line">&quot;script-torrent-done-filename&quot;: &quot;/home/pi/Documents/btfinish.sh&quot;, # 指定脚本的位置</span><br></pre></td></tr></table></figure></p>
-<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><p><a href="https://github.com/transmission/transmission/wiki/Scripts" target="_blank" rel="noopener">https://github.com/transmission/transmission/wiki/Scripts</a></p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2104,7 +2105,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">75</span>
+                    <span class="site-state-item-count">77</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

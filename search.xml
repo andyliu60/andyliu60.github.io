@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title><![CDATA[如何访问不加入域的Hyper-V服务器]]></title>
+    <url>%2F2020%2F12%2F19%2F%E5%A6%82%E4%BD%95%E8%AE%BF%E9%97%AE%E4%B8%8D%E5%8A%A0%E5%85%A5%E5%9F%9F%E7%9A%84Hyper-V%E6%9C%8D%E5%8A%A1%E5%99%A8%2F</url>
+    <content type="text"><![CDATA[Hyper-V服务器 打开PowerShell，启用WinRM。 Enable-PSRemoting 启用并配置CredSSP Enable-WSManCredSSP -Role server Windows客户机 打开PowerShell, 启用WinRM Enable-PSRemoting 配置受信任的主机 Set-Item WSMan:\localhost\Client\TrustedHosts -Value * 启用并配置CredSSP Enable-WSManCredSSP -Role client -DelegateComputer * 打开本地组策略管理器，选择Computer Configuration - Administrative Templates - System - Credential Delegation 选择Allow delegating fresh credentials with NTLM-only server authentication 输入wsman/*]]></content>
+      <tags>
+        <tag>Windows</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title><![CDATA[如何用System帐号运行程序]]></title>
+    <url>%2F2020%2F12%2F19%2F%E5%A6%82%E4%BD%95%E7%94%A8System%E5%B8%90%E5%8F%B7%E8%BF%90%E8%A1%8C%E7%A8%8B%E5%BA%8F%2F</url>
+    <content type="text"><![CDATA[某些情况下，需要用System账号来运行程序。以下针对CMD为例，通过Psexec来使用SYSTEM账号运行cmd.exe。 下载PsExec。 将下载的PsTools.zip压缩包解压后，拷贝文件PsExec.exe或者PsExec64.exe到C:\Windows\System32目录。 以管理员身份运行CMD 输入以下命令后，会打开一个新的以SYSTEM账号运行的命令行窗口 PsExec.exe -i -d -s cmd.exe 打开任务管理器，查看进程cmd.exe的运行账号为SYSTEM。]]></content>
+      <tags>
+        <tag>Intune</tag>
+      </tags>
+  </entry>
+  <entry>
     <title><![CDATA[如何将Azure AD的账号或角色的objectid转换成本地计算机的sid]]></title>
     <url>%2F2020%2F11%2F25%2F%E5%A6%82%E4%BD%95%E5%B0%86Azure-AD%E7%9A%84%E8%B4%A6%E5%8F%B7%E6%88%96%E8%A7%92%E8%89%B2%E7%9A%84objectid%E8%BD%AC%E6%8D%A2%E6%88%90%E6%9C%AC%E5%9C%B0%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%9A%84sid%2F</url>
     <content type="text"><![CDATA[安装Azure AD PowerShell模块 Install-Module -Name AzureAD 用管理员账号登录到Azure AD Connect-AzureAD 通过以下命令，获取到Azure AD中角色，其中Device Administrators和Company Administrators（也就是Global Administrators）会自动被加入到本地管理员组。 Get-AzureADDirectoryRole 可以通过访问以下链接，下载脚本。该脚本可以将AzureAD中的用户、组和角色的ObjectID转换成SID。 https://github.com/okieselbach/Intune/blob/master/Convert-AzureAdObjectIdToSid.ps1 关于该脚本作者的博客，请点击以下链接。 https://oliverkieselbach.com/2020/05/13/powershell-helpers-to-convert-azure-ad-object-ids-and-sids/]]></content>
@@ -74,17 +90,17 @@
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[BT种子放到目录下后自动下载]]></title>
-    <url>%2F2020%2F02%2F16%2FBT%E7%A7%8D%E5%AD%90%E6%94%BE%E5%88%B0%E7%9B%AE%E5%BD%95%E4%B8%8B%E5%90%8E%E8%87%AA%E5%8A%A8%E4%B8%8B%E8%BD%BD%2F</url>
-    <content type="text"><![CDATA[Transmission支持将种子文件放到指定目录下后，就会自动创建下载任务。 配置参数 12&quot;watch-dir&quot;: &quot;/home/pi/Downloads/torrents&quot;,&quot;watch-dir-enabled&quot;: true 配置参数watch-dir，指定存放种子文件的目录。为了避免权限不足，建议为目录设置775权限。1chmod 775 torrents 为了使配置生效，需要重新启动Transmission-daemon服务。1sudo service transmission-daemon restart]]></content>
+    <title><![CDATA[BT下载完成后发送通知]]></title>
+    <url>%2F2020%2F02%2F16%2FBT%E4%B8%8B%E8%BD%BD%E5%AE%8C%E6%88%90%E5%90%8E%E5%8F%91%E9%80%81%E9%80%9A%E7%9F%A5%2F</url>
+    <content type="text"><![CDATA[需求在树莓派上，每次通过Transmission下载文件时，都要通过浏览器查看文件是否已下载完成。最好能在文件下载完成后，通过手机自动发送下载完成通知。 解决方案Transmission支持当文件下载完成后，可以运行指定路径的脚本。结合IFTTT，可以将下载完成的文件名发送到手机端。 脚本创建脚本文件btfinish.sh：12touch /home/pi/Documents/btfinish.shchmod 775 /home/pi/Documents/btfinish.sh 脚本内容如下：123#!/bin/bash/home/pi/Documents/bt_ifttt.py &quot;$TR_TORRENT_NAME&quot; 创建Python脚本文件bt_ifttt.py，该脚本将会向IFTTT服务发送下载完成的消息。123456789101112131415161718192021222324252627282930313233#!/usr/bin/env python3# -*- coding: utf-8 -*-&apos;This is a module used to communicate with IFTTT platform.&apos;__author__ = &apos;Andy Liu&apos;import requestsimport subprocessimport sysclass Notification(object): mykey = &apos;&apos; def __init__(self, event, **values): self.__url = &quot;https://maker.ifttt.com/trigger/%s/with/key/%s&quot; % (event, self.mykey) self.__values = values def sent(self): requests.post(self.__url, data=self.__values) @property def url(self): return self.__url @property def values(self): return self.__valuesif __name__ == &apos;__main__&apos;: bt_file_name = sys.argv[1] # 从脚本外部获取参数 n = Notification(&apos;bt_download&apos;, value1 = bt_file_name) # IFTTT的事件名称和参数值1 n.sent() IFTTT 配置文件修改Tranmission-daemon配置文件settings.json。 1sudo vi /etc/transmission-daemon/settings.json 修改以下参数：12&quot;script-torrent-done-enabled&quot;: true, # 下载完成后，调用并运行脚本&quot;script-torrent-done-filename&quot;: &quot;/home/pi/Documents/btfinish.sh&quot;, # 指定脚本的位置 参考资料https://github.com/transmission/transmission/wiki/Scripts]]></content>
       <tags>
         <tag>RaspberryPi</tag>
       </tags>
   </entry>
   <entry>
-    <title><![CDATA[BT下载完成后发送通知]]></title>
-    <url>%2F2020%2F02%2F16%2FBT%E4%B8%8B%E8%BD%BD%E5%AE%8C%E6%88%90%E5%90%8E%E5%8F%91%E9%80%81%E9%80%9A%E7%9F%A5%2F</url>
-    <content type="text"><![CDATA[需求在树莓派上，每次通过Transmission下载文件时，都要通过浏览器查看文件是否已下载完成。最好能在文件下载完成后，通过手机自动发送下载完成通知。 解决方案Transmission支持当文件下载完成后，可以运行指定路径的脚本。结合IFTTT，可以将下载完成的文件名发送到手机端。 脚本创建脚本文件btfinish.sh：12touch /home/pi/Documents/btfinish.shchmod 775 /home/pi/Documents/btfinish.sh 脚本内容如下：123#!/bin/bash/home/pi/Documents/bt_ifttt.py &quot;$TR_TORRENT_NAME&quot; 创建Python脚本文件bt_ifttt.py，该脚本将会向IFTTT服务发送下载完成的消息。123456789101112131415161718192021222324252627282930313233#!/usr/bin/env python3# -*- coding: utf-8 -*-&apos;This is a module used to communicate with IFTTT platform.&apos;__author__ = &apos;Andy Liu&apos;import requestsimport subprocessimport sysclass Notification(object): mykey = &apos;&apos; def __init__(self, event, **values): self.__url = &quot;https://maker.ifttt.com/trigger/%s/with/key/%s&quot; % (event, self.mykey) self.__values = values def sent(self): requests.post(self.__url, data=self.__values) @property def url(self): return self.__url @property def values(self): return self.__valuesif __name__ == &apos;__main__&apos;: bt_file_name = sys.argv[1] # 从脚本外部获取参数 n = Notification(&apos;bt_download&apos;, value1 = bt_file_name) # IFTTT的事件名称和参数值1 n.sent() IFTTT 配置文件修改Tranmission-daemon配置文件settings.json。 1sudo vi /etc/transmission-daemon/settings.json 修改以下参数：12&quot;script-torrent-done-enabled&quot;: true, # 下载完成后，调用并运行脚本&quot;script-torrent-done-filename&quot;: &quot;/home/pi/Documents/btfinish.sh&quot;, # 指定脚本的位置 参考资料https://github.com/transmission/transmission/wiki/Scripts]]></content>
+    <title><![CDATA[BT种子放到目录下后自动下载]]></title>
+    <url>%2F2020%2F02%2F16%2FBT%E7%A7%8D%E5%AD%90%E6%94%BE%E5%88%B0%E7%9B%AE%E5%BD%95%E4%B8%8B%E5%90%8E%E8%87%AA%E5%8A%A8%E4%B8%8B%E8%BD%BD%2F</url>
+    <content type="text"><![CDATA[Transmission支持将种子文件放到指定目录下后，就会自动创建下载任务。 配置参数 12&quot;watch-dir&quot;: &quot;/home/pi/Downloads/torrents&quot;,&quot;watch-dir-enabled&quot;: true 配置参数watch-dir，指定存放种子文件的目录。为了避免权限不足，建议为目录设置775权限。1chmod 775 torrents 为了使配置生效，需要重新启动Transmission-daemon服务。1sudo service transmission-daemon restart]]></content>
       <tags>
         <tag>RaspberryPi</tag>
       </tags>
